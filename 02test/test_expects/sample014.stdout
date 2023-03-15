@@ -1,0 +1,34 @@
+program sample14;
+    var
+        com : char;
+        x , y : integer;
+        endflag : boolean;
+begin
+    writeln ( '   *** Calculator -- h for help ***' );
+    x := 0;
+    endflag := false;
+    while not endflag do
+    begin
+        writeln ( ' Please input command :' );
+        readln ( com , y );
+        if ( com = 'c' ) or ( com = 'C' ) then
+        begin
+            x := y;
+        end
+        else if com = '+' then
+        begin
+            x := x + y;
+        end
+        else if com = '-' then
+        begin
+            x := x - y;
+        end
+        else if com = '*' then
+        begin
+            x := x * y;
+        end
+        else if com = '/' then
+        begin
+            x :=
+Illegal Character Occurred in SSLASH code = 32
+ x

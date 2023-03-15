@@ -15,22 +15,22 @@ def command(cmd):
         result = subprocess.run(cmd, shell=True, check=False,
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 universal_newlines=True)
-        for line in result.stdout.splitlines():
-            yield line
+#        for line in result.stdout.splitlines():
+#            yield line
+        return [result.stdout,result.stderr]
     except subprocess.CalledProcessError:
         print('外部プログラムの実行に失敗しました [' + cmd + ']', file=sys.stderr)
         sys.exit(1)
 
 def common_task(mpl_file, out_file):
     try:
-        exec = Path(__file__).parent.parent.joinpath("cr")
-        out_text = command("{} {}".format(exec,mpl_file))
+        exec = Path("/workspaces").joinpath("pp")
+#        exec = Path(__file__).parent.parent.joinpath("cr")
+        exec_res = command("{} {}".format(exec,mpl_file))
+        sout = exec_res.pop(0)
         out = []
-        for line in out_text:
-            out.append(re.sub(r'\s',r'',line))
-        if out != []:
-            out.pop(0)
-        out.sort()
+        for line in sout.splitlines():
+            out.append(line)
         with open(out_file, mode='w') as fp:
             for l in out:
                 fp.write(l+'\n')
