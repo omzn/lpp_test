@@ -22,7 +22,8 @@ def command(cmd):
 
 def common_task(casl2_file, out_file):
     try:
-        c2c2 = Path(__file__).parent.parent.joinpath("c2c2.js")
+#        c2c2 = Path(__file__).parent.parent.joinpath("c2c2.js")
+        c2c2 = Path("/casljs").joinpath("c2c2.js")
         assembler_text = command("node {} -n -c -a {}".format(c2c2,casl2_file))
         if not "DEFINED SYMBOLS" in assembler_text:
             raise Casl2AssembleError

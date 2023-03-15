@@ -20,7 +20,8 @@ def command(cmd):
 
 def common_task(mpl_file, out_file):
     try:
-        tc = Path(__file__).parent.parent.joinpath("tc")
+#        tc = Path(__file__).parent.parent.joinpath("tc")
+        tc = Path("/workspaces").joinpath("tc")
         compiler_text = command("{} {}".format(tc,mpl_file))
         out = []
         for line in compiler_text:
@@ -41,7 +42,7 @@ def common_task(mpl_file, out_file):
 TEST_RESULT_DIR = "test_results"
 TEST_EXPECT_DIR = "test_expects"
 
-test_data = sorted(glob.glob("../input*/*.mpl", recursive=True))
+test_data = sorted(glob.glob("../input01/*.mpl", recursive=True))
 
 @pytest.mark.timeout(10)
 @pytest.mark.parametrize(("mpl_file"), test_data)

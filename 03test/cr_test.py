@@ -24,7 +24,8 @@ def command(cmd):
 
 def common_task(mpl_file, out_file):
     try:
-        exec = Path(__file__).parent.parent.joinpath("cr")
+#        exec = Path(__file__).parent.parent.joinpath("cr")
+        exec = Path("/workspaces").joinpath("cr")
         exec_res = command("{} {}".format(exec,mpl_file))
         out = []
         sout = exec_res.pop(0)

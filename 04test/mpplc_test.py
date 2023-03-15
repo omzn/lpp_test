@@ -22,9 +22,10 @@ def command(cmd):
 
 def common_task(mpl_file, out_file):
     try:
-        mpplc = Path(__file__).parent.parent.joinpath("mpplc")
+        #mpplc = Path(__file__).parent.parent.joinpath("mpplc")
+        exec = Path("/workspaces").joinpath("mpplc")
         cslfile = Path(mpl_file).stem + ".csl"
-        compiler_text = command("{} {}".format(mpplc,mpl_file))
+        compiler_text = command("{} {}".format(exec,mpl_file))
         if compiler_text:
             raise MpplCompileError
         casl2file = Path(__file__).parent.joinpath(CASL2_FILE_DIR).joinpath(cslfile)
