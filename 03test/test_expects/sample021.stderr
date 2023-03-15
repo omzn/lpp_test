@@ -1,0 +1,2 @@
+Line:    2 ERROR: a program sentence must end with ';'. (current token: 'var')
+Line:    2 ERROR: Parser aborted with error. (current token: 'var')

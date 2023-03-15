@@ -1,0 +1,2 @@
+Line:    2 ERROR: composit statement should begin with 'begin'. (current token: ';')
+Line:    2 ERROR: Parser aborted with error. (current token: ';')

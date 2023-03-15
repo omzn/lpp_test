@@ -1,0 +1,14 @@
+OUT>    *** Calculator -- h for help ***
+OUT>  Please input command :
+IN> +1
+OUT> Temporary Result =1
+OUT>  Please input command :
+IN> +2
+OUT> Temporary Result =3
+OUT>  Please input command :
+IN> /4
+OUT> Temporary Result =3/4
+OUT>  Please input command :
+IN> o
+IN> o
+OUT> Final Result =3/4

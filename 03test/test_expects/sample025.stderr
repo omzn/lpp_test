@@ -1,0 +1,2 @@
+Line:    6 ERROR: composit statement must end with 'end'. (current token: 'else')
+Line:    6 ERROR: Parser aborted with error. (current token: 'else')

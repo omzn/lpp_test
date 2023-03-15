@@ -1,0 +1,3 @@
+Line:   10 ERROR: 'break' must be in a while loop. (current token: 'break')
+Line:   10 ERROR: composit statement must end with 'end'. (current token: 'break')
+Line:   10 ERROR: Parser aborted with error. (current token: 'break')

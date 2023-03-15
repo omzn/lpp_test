@@ -1,0 +1,7 @@
+OUT> proc of p
+OUT> proc of q
+IN> 1
+OUT> true
+OUT> proc of q
+IN> 3
+OUT> true

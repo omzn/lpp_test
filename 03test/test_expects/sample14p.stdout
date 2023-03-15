@@ -1,0 +1,8 @@
+com|char|26|34,35,35,36,37,38,39,40,40
+divide|procedure|22|39
+endflag|boolean|27|31,32,40,52
+mult|procedure|18|38
+sub|procedure|14|37
+sum|procedure|10|36
+x|integer|9|12,12,16,16,20,20,24,24,30,35,52,53
+y|integer|9|12,16,20,24,34,35

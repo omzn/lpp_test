@@ -1,0 +1,9 @@
+a:p|char|3|6
+a:q|boolean|10|15,16
+a|integer|2|20,22,22
+b:q|integer|9|15
+b|char|8|20,21
+c|integer|18|
+p|procedure(char)|3|21
+q:q|integer|11|14,15
+q|procedure(integer)|9|22,22

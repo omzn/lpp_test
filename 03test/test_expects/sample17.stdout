@@ -1,0 +1,7 @@
+a|integer|2|7,10,10,11,14
+b|integer|2|8,9,10,10,11,12
+gcm|integer|3|14,15,16
+lcm|integer|3|15,16
+m|integer|2|6,7,15
+n|integer|2|6,8,15
+r|integer|2|10,12

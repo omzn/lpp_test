@@ -1,0 +1,17 @@
+OUT>    *** Calculator -- h for help ***
+OUT>  Please input command :
+IN> +
+IN> 1
+OUT> Temporary Result =1
+OUT>  Please input command :
+IN> +
+IN> 3
+OUT> Temporary Result =4
+OUT>  Please input command :
+IN> /
+IN> 4
+OUT> Temporary Result =1
+OUT>  Please input command :
+IN> o
+IN> o
+OUT> Final Result =1

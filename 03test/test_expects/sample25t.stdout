@@ -1,0 +1,4 @@
+boolx|boolean|3|5,6,8
+booly|boolean|3|5,6,9
+ch|char|3|5,6,8,8
+int|integer|3|5,6,8,8

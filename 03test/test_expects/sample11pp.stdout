@@ -1,0 +1,10 @@
+data:goukei|integer|14|18,19
+data|integer|12|
+goukei|procedure(integer,integer)|13|26
+kazuyomikomi|procedure(integer)|2|25
+n:goukei|integer|13|17,20,20
+n:kazuyomikomi|integer|2|5
+n|integer|23|25,26
+s:goukei|integer|13|16,19,19
+sum|integer|7|10,26
+wakakidasi|procedure|8|27
