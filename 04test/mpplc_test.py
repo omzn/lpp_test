@@ -15,7 +15,7 @@ def command(cmd):
         result = subprocess.run(cmd, shell=True, check=False,
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 universal_newlines=True, text=True)
-        return result.stdout
+        return result.stdout + '\n' + result.stderr
     except subprocess.CalledProcessError:
         print('外部プログラムの実行に失敗しました [' + cmd + ']', file=sys.stderr)
         sys.exit(1)

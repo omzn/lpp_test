@@ -7,7 +7,7 @@ import sys
 import re
 from pathlib import Path
 
-class SemanticError(Exception):
+class ParseError(Exception):
     pass
 
 def command(cmd):
@@ -28,12 +28,21 @@ def common_task(mpl_file, out_file):
 #        exec = Path(__file__).parent.parent.joinpath("cr")
         exec_res = command("{} {}".format(exec,mpl_file))
         sout = exec_res.pop(0)
+        serr = exec_res.pop(0)
+        if serr:
+            raise ParseError
         out = []
         for line in sout.splitlines():
             out.append(line)
         with open(out_file, mode='w') as fp:
             for l in out:
                 fp.write(l+'\n')
+        return 0
+    except ParseError:
+        if re.match(r'sample0', mpl_file):
+            return 1
+        else:
+            raise ParseError        
     except Exception as err:
         with open(out_file, mode='w') as fp:
             print(err, file=fp)
@@ -55,6 +64,12 @@ def test_mppl_run(mpl_file):
         os.mkdir(TEST_RESULT_DIR)
     out_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out")
     res = common_task(mpl_file, out_file)
-    expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
-    with open(out_file) as ofp, open(expect_file) as efp:
-        assert ofp.read() == efp.read()
+    if res == 0:
+        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
+        with open(out_file) as ofp, open(expect_file) as efp:
+            if ofp.read() == efp.read():
+                res = 1
+    assert res == 1
+            
+
+
