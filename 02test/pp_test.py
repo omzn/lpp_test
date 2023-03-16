@@ -39,7 +39,7 @@ def common_task(mpl_file, out_file):
                 fp.write(l+'\n')
         return 0
     except ParseError:
-        if re.match(r'sample0', mpl_file):
+        if re.search(r'sample0', mpl_file):
             return 1
         else:
             raise ParseError        
