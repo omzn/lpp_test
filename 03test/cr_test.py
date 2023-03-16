@@ -24,11 +24,13 @@ def command(cmd):
 
 def common_task(mpl_file, out_file):
     try:
-#        exec = Path(__file__).parent.parent.joinpath("cr")
         exec = Path("/workspaces").joinpath("cr")
         exec_res = command("{} {}".format(exec,mpl_file))
         out = []
         sout = exec_res.pop(0)
+        serr = exec_res.pop(0)
+        if serr:
+            raise SemanticError
         for line in sout.splitlines():
             out.append(re.sub(r'\s',r'',line))
         if out != []:
@@ -39,14 +41,17 @@ def common_task(mpl_file, out_file):
                     fp.write(l+'\n')
             return 0
         else:
-            serr = exec_res.pop(0)
+            raise SemanticError
+    except SemanticError:
+        if re.search(r'sample0', mpl_file):
             for line in serr.splitlines():
-                out.append(re.sub(r'\s',r'',line))
+                out.append(line)
             with open(out_file, mode='w') as fp:
                 for l in out:
                     fp.write(l+'\n')
             return 1
-
+        else:
+            raise SemanticError
     except Exception as err:
         with open(out_file, mode='w') as fp:
             print(err, file=fp)
@@ -73,4 +78,8 @@ def test_mppl_run(mpl_file):
         with open(out_file) as ofp, open(expect_file) as efp:
             assert ofp.read() == efp.read()
     else:
-            assert os.path.getsize(out_file) > 0
+        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stderr")
+        with open(out_file) as ofp, open(expect_file) as efp:
+            o =  re.search(r'(\d+)',ofp.read()).group()
+            e =  re.search(r'(\d+)',efp.read()).group()
+            assert o == e

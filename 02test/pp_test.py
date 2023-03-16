@@ -25,11 +25,10 @@ def command(cmd):
 def common_task(mpl_file, out_file):
     try:
         exec = Path("/workspaces").joinpath("pp")
-#        exec = Path(__file__).parent.parent.joinpath("cr")
         exec_res = command("{} {}".format(exec,mpl_file))
+        out = []
         sout = exec_res.pop(0)
         serr = exec_res.pop(0)
-        out = []
         if serr:
             raise ParseError
         for line in sout.splitlines():
