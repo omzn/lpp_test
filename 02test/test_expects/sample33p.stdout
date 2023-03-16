@@ -11,7 +11,8 @@ program sample33p;
             a := 'b'
         else
             a := 'c';
-        while x > 0 do x := x - 1
+        while x > 0 do
+            x := x - 1
     end;
     var
         b : char;
