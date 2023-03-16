@@ -60,7 +60,7 @@ def common_task(mpl_file, out_file):
 TEST_RESULT_DIR = "test_results"
 TEST_EXPECT_DIR = "test_expects"
 
-test_data = sorted(glob.glob("../input0{1,2}/*.mpl", recursive=True))
+test_data = sorted(glob.glob("../input0[12]/*.mpl", recursive=True))
 
 @pytest.mark.timeout(10)
 @pytest.mark.parametrize(("mpl_file"), test_data)
