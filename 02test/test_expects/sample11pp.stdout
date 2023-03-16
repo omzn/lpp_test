@@ -18,11 +18,11 @@ program sample11pp;
     begin
         s := 0;
         while n > 0 do
-        begin
-            readln ( data );
-            s := s + data;
-            n := n - 1
-        end
+            begin
+                readln ( data );
+                s := s + data;
+                n := n - 1
+            end
     end;
     var
         n : integer;

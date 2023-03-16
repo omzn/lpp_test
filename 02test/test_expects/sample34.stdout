@@ -8,19 +8,19 @@ begin
     readln ( ch );
     writeln;
     while num > 0 do
-    begin
-        write ( ch );
-        num := num - 1
-    end;
+        begin
+            write ( ch );
+            num := num - 1
+        end;
     writeln;
     writeln ( 'input the number of data and data character (read)' );
     read ( num );
     read ( ch );
     writeln;
     while num > 0 do
-    begin
-        write ( ch );
-        num := num - 1
-    end;
+        begin
+            write ( ch );
+            num := num - 1
+        end;
     writeln
 end.

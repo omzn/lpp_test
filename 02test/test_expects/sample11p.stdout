@@ -18,11 +18,11 @@ program sample11p;
     begin
         sum := 0;
         while n > 0 do
-        begin
-            readln ( data );
-            sum := sum + data;
-            n := n - 1
-        end
+            begin
+                readln ( data );
+                sum := sum + data;
+                n := n - 1
+            end
     end;
 begin
     call kazuyomikomi;

@@ -9,11 +9,11 @@ program sample29;
         a := m;
         b := n;
         while b <> 0 do
-        begin
-            r := a - ( a div b ) * b;
-            a := b;
-            b := r
-        end;
+            begin
+                r := a - ( a div b ) * b;
+                a := b;
+                b := r
+            end;
         gc := a;
         lc := ( m div gc ) * n
     end;
@@ -31,11 +31,11 @@ program sample29;
         if ( a = 0 ) or ( b = 0 ) then
             gc := 1
         else
-        begin
-            call abs ( a , aa );
-            call abs ( b , bb );
-            call gcmlcm ( aa , bb , gc , lc )
-        end
+            begin
+                call abs ( a , aa );
+                call abs ( b , bb );
+                call gcmlcm ( aa , bb , gc , lc )
+            end
     end;
     procedure lcm ( a , b , lc : integer );
         var
@@ -44,11 +44,11 @@ program sample29;
         if ( a = 0 ) or ( b = 0 ) then
             lc := 1
         else
-        begin
-            call abs ( a , aa );
-            call abs ( b , bb );
-            call gcmlcm ( aa , bb , gc , lc )
-        end
+            begin
+                call abs ( a , aa );
+                call abs ( b , bb );
+                call gcmlcm ( aa , bb , gc , lc )
+            end
     end;
     var
         unusedchar : char;
@@ -57,20 +57,20 @@ program sample29;
             gc : integer;
     begin
         if a1 = 0 then
-        begin
-            a2 := 1;
-            return
-        end;
+            begin
+                a2 := 1;
+                return
+            end;
         if a2 = 0 then
-        begin
-            a1 := 1;
-            return
-        end;
+            begin
+                a1 := 1;
+                return
+            end;
         if a2 < 0 then
-        begin
-            a1 := - a1;
-            a2 := - a2
-        end;
+            begin
+                a1 := - a1;
+                a2 := - a2
+            end;
         call gcm ( a1 , a2 , gc );
         a1 := a1 div gc;
         a2 := a2 div gc
@@ -116,19 +116,21 @@ program sample29;
     begin
         if a = 0 then
             writeln ( 'Final Result =' , a )
-        else if b = 1 then
-            writeln ( 'Final Result =' , a )
         else
-            writeln ( 'Final Result =' , a , '/' , b )
+            if b = 1 then
+                writeln ( 'Final Result =' , a )
+            else
+                writeln ( 'Final Result =' , a , '/' , b )
     end;
     procedure printtemp ( a , b : integer );
     begin
         if a = 0 then
             writeln ( 'Temporary Result =' , a )
-        else if b = 1 then
-            writeln ( 'Temporary Result =' , a )
         else
-            writeln ( 'Temporary Result =' , a , '/' , b )
+            if b = 1 then
+                writeln ( 'Temporary Result =' , a )
+            else
+                writeln ( 'Temporary Result =' , a , '/' , b )
     end;
     var
         x1 , x2 , y1 , y2 : integer;
@@ -141,40 +143,45 @@ begin
     x2 := 1;
     endflag := false;
     while not endflag do
-    begin
-        writeln ( ' Please input command :' );
-        readln ( com , y1 );
-        y2 := 1;
-        if ( com = 'c' ) or ( com = 'C' ) then
         begin
-            x1 := y1;
-            x2 := y2
+            writeln ( ' Please input command :' );
+            readln ( com , y1 );
+            y2 := 1;
+            if ( com = 'c' ) or ( com = 'C' ) then
+                begin
+                    x1 := y1;
+                    x2 := y2
+                end
+            else
+                if com = '+' then
+                    call sum ( x1 , x2 , y1 , y2 )
+                else
+                    if com = '-' then
+                        call sub ( x1 , x2 , y1 , y2 )
+                    else
+                        if com = '*' then
+                            call mult ( x1 , x2 , y1 , y2 )
+                        else
+                            if com = '/' then
+                                call divide ( x1 , x2 , y1 , y2 )
+                            else
+                                if ( com = 'o' ) or ( com = 'O' ) then
+                                    endflag := true
+                                else
+                                    begin
+                                        writeln;
+                                        writeln ( 'Calculator Usage:' );
+                                        writeln ( '  c number : clear & set it' );
+                                        writeln ( '  + number : add it' );
+                                        writeln ( '  - number : subtract it' );
+                                        writeln ( '  * number : multiply it' );
+                                        writeln ( '  / number : divide by it' );
+                                        writeln ( '  o        : off(terminate execution)' );
+                                        writeln
+                                    end;
+            if endflag then
+                call printfinal ( x1 , x2 )
+            else
+                call printtemp ( x1 , x2 )
         end
-        else if com = '+' then
-            call sum ( x1 , x2 , y1 , y2 )
-        else if com = '-' then
-            call sub ( x1 , x2 , y1 , y2 )
-        else if com = '*' then
-            call mult ( x1 , x2 , y1 , y2 )
-        else if com = '/' then
-            call divide ( x1 , x2 , y1 , y2 )
-        else if ( com = 'o' ) or ( com = 'O' ) then
-            endflag := true
-        else
-        begin
-            writeln;
-            writeln ( 'Calculator Usage:' );
-            writeln ( '  c number : clear & set it' );
-            writeln ( '  + number : add it' );
-            writeln ( '  - number : subtract it' );
-            writeln ( '  * number : multiply it' );
-            writeln ( '  / number : divide by it' );
-            writeln ( '  o        : off(terminate execution)' );
-            writeln
-        end;
-        if endflag then
-            call printfinal ( x1 , x2 )
-        else
-            call printtemp ( x1 , x2 )
-    end
 end.
