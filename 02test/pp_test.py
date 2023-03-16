@@ -40,6 +40,11 @@ def common_task(mpl_file, out_file):
         return 0
     except ParseError:
         if re.search(r'sample0', mpl_file):
+            for line in serr.splitlines():
+                out.append(line)
+            with open(out_file, mode='w') as fp:
+                for l in out:
+                    fp.write(l+'\n')
             return 1
         else:
             raise ParseError        
@@ -67,9 +72,13 @@ def test_mppl_run(mpl_file):
     if res == 0:
         expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
         with open(out_file) as ofp, open(expect_file) as efp:
-            if ofp.read() == efp.read():
-                res = 1
-    assert res == 1
+            assert ofp.read() == efp.read()
+    else:
+        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stderr")
+        with open(out_file) as ofp, open(expect_file) as efp:
+            o =  re.search(r'(\d+)',ofp.read()).group()
+            e =  re.search(r'(\d+)',efp.read()).group()
+            assert o == e
             
 
 

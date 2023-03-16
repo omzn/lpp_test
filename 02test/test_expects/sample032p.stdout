@@ -1,4 +1,0 @@
-program rcall;
-    procedure f;
-    begin
-        call
