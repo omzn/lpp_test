@@ -29,9 +29,9 @@ def common_task(mpl_file, out_file):
         exec_res = command("{} {}".format(exec,mpl_file))
         sout = exec_res.pop(0)
         serr = exec_res.pop(0)
+        out = []
         if serr:
             raise ParseError
-        out = []
         for line in sout.splitlines():
             out.append(line)
         with open(out_file, mode='w') as fp:
