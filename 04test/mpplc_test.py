@@ -73,7 +73,7 @@ def test_mppl_run(mpl_file):
         casl2file = Path(__file__).parent.joinpath(CASL2_FILE_DIR).joinpath(Path(mpl_file).stem + ".csl")
         assert os.path.getsize(casl2file) > 0
     else:
-        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stderr")
+        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).name + ".stderr")
         with open(out_file) as ofp, open(expect_file) as efp:
             o =  re.search(r'(\d+)',ofp.read()).group()
             e =  re.search(r'(\d+)',efp.read()).group()
