@@ -45,6 +45,6 @@ shift 4
           fi
         fi
     done
-} > motd
+} > /etc/motd
 
 exit 0
