@@ -4,8 +4,7 @@
 # Notes       : install imagemagick before
 
 # for replace transparent color
-transparent_before="255;0;255"
-transparent_after="16;16;16"
+transparent_before="190;179;145"
 
 # convert image to ppm and output to stdout
 ppm=$(convert ${1:-a} -compress none ppm:- 2>/dev/null)
@@ -31,16 +30,19 @@ shift 4
 
         rgb="${!i};${!j};${!k}"
 
-        # replace transparent color
-        if [ ${rgb} == ${transparent_before} ] ; then
-          rgb=${transparent_after}
-        fi
-
         # start a new line when reach cols
         if [ $(( (${i} + 2) / 3 % ${cols} )) -eq 0 ] ; then
-          echo -e "\033[48;2;${rgb}m  \033[m"
+          if [ ${rgb} == ${transparent_before} ] ; then
+            echo -e "  "
+          else
+            echo -e "\033[48;2;${rgb}m  \033[m"
+          fi
         else
-          echo -en "\033[48;2;${rgb}m  \033[m"
+          if [ ${rgb} == ${transparent_before} ] ; then
+            echo -en "  "
+          else
+            echo -en "\033[48;2;${rgb}m  \033[m"
+          fi
         fi
     done
 } > motd
