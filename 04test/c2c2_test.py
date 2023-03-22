@@ -58,7 +58,7 @@ test_data = sorted(glob.glob("casl2/sample[!0]*.csl", recursive=True))
 
 @pytest.mark.timeout(10)
 @pytest.mark.parametrize(("casl2_file"), test_data)
-def test_c2c2_run(casl2_file):
+def test_run(casl2_file):
     if not Path(TEST_RESULT_DIR).exists():
         os.mkdir(TEST_RESULT_DIR)
     out_file = Path(TEST_RESULT_DIR).joinpath(Path(casl2_file).name + ".out")

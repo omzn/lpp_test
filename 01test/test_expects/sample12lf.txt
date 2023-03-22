@@ -1,0 +1,6 @@
+"."	1
+";"	1
+"NAME"	1
+"begin"	1
+"end"	1
+"program"	1

@@ -63,7 +63,7 @@ test_data = sorted(glob.glob("../input0[12]/*.mpl", recursive=True))
 
 @pytest.mark.timeout(10)
 @pytest.mark.parametrize(("mpl_file"), test_data)
-def test_mppl_run(mpl_file):
+def test_run(mpl_file):
     if not Path(TEST_RESULT_DIR).exists():
         os.mkdir(TEST_RESULT_DIR)
     out_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out")
