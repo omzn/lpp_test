@@ -1,2 +1,3 @@
-NAME STRING
+{NAME 
+       STRING}
 100000
