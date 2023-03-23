@@ -4,3 +4,4 @@ program S;
 begin end.
 { The shortest MPPL Program : (line break = LF)
    sample12 }
+/*   *   *
