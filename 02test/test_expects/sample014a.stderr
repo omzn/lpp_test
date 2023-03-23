@@ -1,0 +1,3 @@
+Line:    4 ERROR: Illegal character. (current token: 'NAME')
+Line:    4 ERROR: composit statement must end with 'end'.
+Line:    4 ERROR: Parser aborted with error.

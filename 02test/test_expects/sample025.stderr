@@ -1,6 +1,2 @@
-
-Error: keyword 'END' is not found. line = 6
-
-Error: p_comst() said error in p_block. line = 6
-
-Error: Some Errors occurred. line = 6
+Line:    6 ERROR: composit statement must end with 'end'. (current token: 'else')
+Line:    6 ERROR: Parser aborted with error. (current token: 'else')

@@ -33,6 +33,4 @@ begin
                         else
                             if com = '/' then
                                 begin
-                                    x :=
-Illegal Character Occurred in SSLASH code = 32
- x
+                                    x := x

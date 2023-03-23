@@ -1,6 +1,5 @@
-
-Error: keyword 'END' is not found. line = 32
-
-Error: p_comst() said error in p_block. line = 32
-
-Error: Some Errors occurred. line = 32
+Line:   32 ERROR: illegal character: '/'. (current token: 'NAME')
+Line:   32 ERROR: composit statement must end with 'end'.
+Line:   32 ERROR: composit statement must end with 'end'.
+Line:   32 ERROR: composit statement must end with 'end'.
+Line:   32 ERROR: Parser aborted with error.
