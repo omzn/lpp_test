@@ -1,0 +1,2 @@
+Line:    1 ERROR: program is required. (current token: 'NUMBER')
+Line:    1 ERROR: Parser aborted with error. (current token: 'NUMBER')

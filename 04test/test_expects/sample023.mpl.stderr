@@ -1,6 +1,2 @@
-
-Error: Keyword 'BEGIN' is not found. line = 2
-
-Error: p_comst() said error in p_block. line = 2
-
-Error: Some Errors occurred. line = 2
+Line:    2 ERROR: composit statement should begin with 'begin'. (current token: ';')
+Line:    2 ERROR: Parser aborted with error. (current token: ';')

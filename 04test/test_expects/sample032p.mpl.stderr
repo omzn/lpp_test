@@ -1,4 +1,3 @@
-
-Error: direct reccursive call is found. line = 2
-
-Error: Some Errors occurred. line = 2
+Line:    2 ERROR: direct reccursive call is found. (current token: 'NAME')
+Line:    2 ERROR: composit statement must end with 'end'. (current token: 'NAME')
+Line:    2 ERROR: Parser aborted with error. (current token: 'NAME')
