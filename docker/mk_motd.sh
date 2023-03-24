@@ -1,6 +1,6 @@
 #!/bin/bash
-# Discription : convert dot image to motd
-# Author      : hasegit
+# Discription : convert dot image to motd 256 colors
+# Author      : hasegit fork omzn
 # Notes       : install imagemagick before
 
 # for replace transparent color
@@ -29,7 +29,7 @@ shift 4
         k=$((i+2))
 
         rgb="${!i};${!j};${!k}"
-        # rgb -> 216 r 6 x g 6 x b 6 
+        # rgb full color -> 216 r 6 x g 6 x b 6 
         c=$((${!i} / 43 * 36 + ${!j} / 43 * 6 + ${!k} / 43 + 16)) 
         # start a new line when reach cols
         if [ $(( (${i} + 2) / 3 % ${cols} )) -eq 0 ] ; then
