@@ -29,19 +29,22 @@ shift 4
         k=$((i+2))
 
         rgb="${!i};${!j};${!k}"
-
+        # rgb -> 216 r 6 x g 6 x b 6 
+        c=$((${!i} / 43 * 36 + ${!j} / 43 * 6 + ${!k} / 43 + 16)) 
         # start a new line when reach cols
         if [ $(( (${i} + 2) / 3 % ${cols} )) -eq 0 ] ; then
           if [ ${rgb} == ${transparent_before} ] ; then
             echo -e "  "
           else
-            echo -e "\033[48;2;${rgb}m  \033[m"
+            #echo -e "\033[48;2;${rgb}m  \033[m"
+            echo -e "\033[48;5;${c}m  \033[m"
           fi
         else
           if [ ${rgb} == ${transparent_before} ] ; then
             echo -en "  "
           else
-            echo -en "\033[48;2;${rgb}m  \033[m"
+            #echo -en "\033[48;2;${rgb}m  \033[m"
+            echo -en "\033[48;5;${c}m  \033[m"
           fi
         fi
     done
