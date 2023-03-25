@@ -7,6 +7,9 @@ import sys
 import re
 from pathlib import Path
 
+target = "pp"
+targetpath = "/workspace"
+
 class ParseError(Exception):
     pass
 
@@ -24,7 +27,7 @@ def command(cmd):
 
 def common_task(mpl_file, out_file):
     try:
-        exec = Path("/workspaces").joinpath("pp")
+        exec = Path(targetpath).joinpath(target)
         exec_res = command("{} {}".format(exec,mpl_file))
         out = []
         sout = exec_res.pop(0)
@@ -79,5 +82,18 @@ def test_run(mpl_file):
             e =  re.search(r'(\d+)',efp.read()).group()
             assert o == e
             
+def test_no_param():
+    exec = Path(targetpath).joinpath(target)
+    exec_res = command("{}".format(exec))
+    sout = exec_res.pop(0)
+    serr = exec_res.pop(0)
+    assert serr 
+
+def test_not_valid_file():
+    exec = Path(targetpath).joinpath(target)
+    exec_res = command("{} hogehoge".format(exec))
+    sout = exec_res.pop(0)
+    serr = exec_res.pop(0)
+    assert serr 
 
 

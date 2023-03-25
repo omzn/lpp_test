@@ -7,6 +7,9 @@ import sys
 import re
 from pathlib import Path
 
+target = "mpplc"
+targetpath = "/workspace"
+
 class CompileError(Exception):
     pass
 
@@ -23,7 +26,7 @@ def command(cmd):
 def common_task(mpl_file, out_file):
     try:
         #mpplc = Path(__file__).parent.parent.joinpath("mpplc")
-        exec = Path("/workspaces").joinpath("mpplc")
+        exec = Path(targetpath).joinpath(target)
         cslfile = Path(mpl_file).stem + ".csl"
         exec_res = command("{} {}".format(exec,mpl_file))
         out = []
@@ -78,3 +81,17 @@ def test_run(mpl_file):
             o =  re.search(r'(\d+)',ofp.read()).group()
             e =  re.search(r'(\d+)',efp.read()).group()
             assert o == e
+
+def test_no_param():
+    exec = Path(targetpath).joinpath(target)
+    exec_res = command("{}".format(exec))
+    sout = exec_res.pop(0)
+    serr = exec_res.pop(0)
+    assert serr 
+
+def test_not_valid_file():
+    exec = Path(targetpath).joinpath(target)
+    exec_res = command("{} hogehoge".format(exec))
+    sout = exec_res.pop(0)
+    serr = exec_res.pop(0)
+    assert serr 
