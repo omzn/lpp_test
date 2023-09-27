@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 
 target = "cr"
-targetpath = "/workspace"
+targetpath = "/workspaces"
 
 class SemanticError(Exception):
     pass

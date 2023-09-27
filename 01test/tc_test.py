@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 
 target = "tc"
-targetpath = "/workspace"
+targetpath = "/workspaces"
 
 class ScanError(Exception):
     pass

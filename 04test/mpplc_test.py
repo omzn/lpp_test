@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 
 target = "mpplc"
-targetpath = "/workspace"
+targetpath = "/workspaces"
 
 class CompileError(Exception):
     pass
