@@ -83,15 +83,15 @@ def test_run(mpl_file):
             assert not ofp.read() == ''
 
 def test_no_param():
-    exec = Path(targetpath).joinpath(target)
+    exec = Path(targetPath).joinpath(target)
     exec_res = command("{}".format(exec))
     sout = exec_res.pop(0)
     serr = exec_res.pop(0)
-    assert serr 
+    assert serr
 
 def test_not_valid_file():
-    exec = Path(targetpath).joinpath(target)
+    exec = Path(targetPath).joinpath(target)
     exec_res = command("{} hogehoge".format(exec))
     sout = exec_res.pop(0)
     serr = exec_res.pop(0)
-    assert serr 
+    assert serr
