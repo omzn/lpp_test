@@ -1,1 +1,2 @@
-Line:    1 ERROR: token is too long.
+
+ ERROR: token is too long. (current token: a)

@@ -1,1 +1,2 @@
-Line:    1 ERROR: string literal is too long.
+
+ ERROR: string literal is too long (current token: a)
