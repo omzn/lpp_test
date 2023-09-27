@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 
 target = "tc"
-targetpath = "/workspace"
+targetPath = "/workspace"
 
 class ScanError(Exception):
     pass
@@ -28,12 +28,13 @@ def command(cmd):
 def common_task(mpl_file, out_file):
     try:
 #        tc = Path(__file__).parent.parent.joinpath("tc")
-        exec = Path(targetpath).joinpath(target)
-        exec_res = command("{} {}".format(exec,mpl_file))
+        exec = Path(targetPath).joinpath(target)
+        exec_res = command(f"{exec} {mpl_file}")
         out = []
         sout = exec_res.pop(0)
         serr = exec_res.pop(0)
-        if serr:
+        if len(serr) > 0:
+            print(f'err message [{serr}]', file=sys.stderr)
             raise ScanError
         for line in sout.splitlines():
             out.append(line)
