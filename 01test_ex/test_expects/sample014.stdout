@@ -1,0 +1,35 @@
+"NAME"	29
+	"Identifier" "endflag"	3
+	"Identifier" "y"	6
+	"Identifier" "x"	11
+	"Identifier" "com"	8
+	"Identifier" "sample14"	1
+"program"	1
+"var"	1
+"begin"	7
+"end"	4
+"if"	5
+"then"	5
+"else"	4
+"while"	1
+"do"	1
+"not"	1
+"or"	1
+"char"	1
+"integer"	1
+"boolean"	1
+"readln"	1
+"writeln"	2
+"false"	1
+"NUMBER"	1
+"STRING"	8
+"+"	1
+"-"	1
+"*"	1
+"="	6
+"("	5
+")"	5
+":="	7
+","	2
+":"	3
+";"	13

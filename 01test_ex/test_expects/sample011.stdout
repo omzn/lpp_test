@@ -1,0 +1,57 @@
+"NAME"	8
+	"Identifier" "d"	1
+	"Identifier" "c"	1
+	"Identifier" "b"	1
+	"Identifier" "a"	1
+	"Identifier" "const"	1
+	"Identifier" "STRING"	1
+	"Identifier" "NUMBER"	1
+	"Identifier" "NAME"	1
+"program"	1
+"var"	1
+"array"	1
+"of"	1
+"begin"	1
+"end"	1
+"if"	1
+"then"	1
+"else"	1
+"procedure"	1
+"return"	1
+"call"	1
+"while"	1
+"do"	1
+"not"	1
+"or"	1
+"div"	1
+"and"	1
+"char"	1
+"integer"	1
+"boolean"	1
+"readln"	1
+"writeln"	1
+"true"	1
+"false"	1
+"NUMBER"	19
+"STRING"	2
+"+"	1
+"-"	11
+"*"	1
+"="	2
+"<>"	1
+"<"	1
+"<="	2
+">"	1
+">="	1
+"("	1
+")"	1
+"["	1
+"]"	1
+":="	2
+"."	1
+","	1
+":"	1
+";"	2
+"read"	1
+"write"	1
+"break"	2

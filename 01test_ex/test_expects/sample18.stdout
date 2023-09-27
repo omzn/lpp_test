@@ -1,0 +1,40 @@
+"NAME"	46
+	"Identifier" "can"	11
+	"Identifier" "n"	13
+	"Identifier" "i"	13
+	"Identifier" "factor"	8
+	"Identifier" "primefactor"	1
+"program"	1
+"var"	1
+"array"	1
+"of"	1
+"begin"	7
+"end"	7
+"if"	4
+"then"	4
+"else"	1
+"while"	3
+"do"	3
+"div"	3
+"and"	1
+"integer"	2
+"readln"	1
+"writeln"	3
+"NUMBER"	20
+"STRING"	5
+"+"	5
+"-"	1
+"*"	1
+"<>"	2
+"<"	4
+"<="	1
+">"	1
+"("	8
+")"	8
+"["	8
+"]"	8
+":="	11
+"."	1
+","	8
+":"	2
+";"	17

@@ -7,10 +7,10 @@ import sys
 import re
 from pathlib import Path
 
-target = "pp"
+target = "tc"
 targetpath = "/workspace"
 
-class ParseError(Exception):
+class ScanError(Exception):
     pass
 
 def command(cmd):
@@ -27,20 +27,22 @@ def command(cmd):
 
 def common_task(mpl_file, out_file):
     try:
+#        tc = Path(__file__).parent.parent.joinpath("tc")
         exec = Path(targetpath).joinpath(target)
         exec_res = command("{} {}".format(exec,mpl_file))
         out = []
         sout = exec_res.pop(0)
         serr = exec_res.pop(0)
         if serr:
-            raise ParseError
+            raise ScanError
         for line in sout.splitlines():
             out.append(line)
+        out.sort()
         with open(out_file, mode='w') as fp:
             for l in out:
-                fp.write(l+'\n')
+                fp.write(re.sub(r'\s*"\s*(\S*)\s*"\s*(\d+)\s*',r'"\1"\t\2\n',l))
         return 0
-    except ParseError:
+    except ScanError:
         if re.search(r'sample0', mpl_file):
             for line in serr.splitlines():
                 out.append(line)
@@ -49,7 +51,7 @@ def common_task(mpl_file, out_file):
                     fp.write(l+'\n')
             return 1
         else:
-            raise ParseError        
+            raise ScanError        
     except Exception as err:
         with open(out_file, mode='w') as fp:
             print(err, file=fp)
@@ -62,15 +64,11 @@ def common_task(mpl_file, out_file):
 TEST_RESULT_DIR = "test_results"
 TEST_EXPECT_DIR = "test_expects"
 
-# 全てのテストデータ
-test_data = sorted(glob.glob("../input0[12]/*.mpl", recursive=True))
-# エラーが出ないことが期待されるデータのみ
-test_valid_data = sorted(glob.glob("../input0[12]/sample[!0]*.mpl", recursive=True))
+test_data = sorted(glob.glob("../input01/*.mpl", recursive=True))
 
 @pytest.mark.timeout(10)
 @pytest.mark.parametrize(("mpl_file"), test_data)
 def test_run(mpl_file):
-    # 期待された出力が得られるかを確認．ただし，厳密すぎるため，テストに通らないからといってダメというわけではない．
     if not Path(TEST_RESULT_DIR).exists():
         os.mkdir(TEST_RESULT_DIR)
     out_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out")
@@ -80,34 +78,8 @@ def test_run(mpl_file):
         with open(out_file) as ofp, open(expect_file) as efp:
             assert ofp.read() == efp.read()
     else:
-        # エラーの行番号が正しいかを確認
-        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stderr")
-        with open(out_file) as ofp, open(expect_file) as efp:
-            o =  re.search(r'(\d+)',ofp.read()).group()
-            e =  re.search(r'(\d+)',efp.read()).group()
-            assert o == e
-
-@pytest.mark.timeout(10)
-@pytest.mark.parametrize(("mpl_file"), test_valid_data)
-def test_idempotency(mpl_file):
-    # メタモーフィックテストによって，冪等性を確認．
-    # 自分自身が生成したソースコードを読み込ませると同じファイルを生成するはず．
-    if not Path(TEST_RESULT_DIR).exists():
-        os.mkdir(TEST_RESULT_DIR)
-    out_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out")
-    res = common_task(mpl_file, out_file)
-    if res == 0:
-        out2_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out2")
-        res1 = common_task(out_file, out2_file)
-        if res1 == 0:
-            with open(out2_file) as ofp2, open(out_file) as ofp1:
-                assert ofp2.read() == ofp1.read()
-        else:
-            # 実行結果がエラーになるのであれば，それはダメ
-            assert False
-    else:
-        # エラーになるわけがないテストデータのみを与えるので，ここは無条件にダメ
-        assert False
+        with open(out_file) as ofp:
+            assert not ofp.read() == ''
 
 def test_no_param():
     exec = Path(targetpath).joinpath(target)
@@ -122,5 +94,3 @@ def test_not_valid_file():
     sout = exec_res.pop(0)
     serr = exec_res.pop(0)
     assert serr 
-
-

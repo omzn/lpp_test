@@ -1,0 +1,33 @@
+"NAME"	28
+	"Identifier" "j"	6
+	"Identifier" "i"	15
+	"Identifier" "furui"	6
+	"Identifier" "sample16"	1
+"program"	1
+"var"	1
+"array"	1
+"of"	1
+"begin"	5
+"end"	5
+"if"	2
+"then"	2
+"while"	3
+"do"	3
+"integer"	1
+"boolean"	1
+"writeln"	1
+"true"	1
+"false"	3
+"NUMBER"	11
+"STRING"	1
+"+"	3
+"<"	4
+"("	1
+")"	1
+"["	6
+"]"	6
+":="	10
+"."	1
+","	2
+":"	2
+";"	13

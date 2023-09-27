@@ -22,6 +22,15 @@ gcc *.c -o tc
 cd /lpp_test/01test; pytest -vv
 ```
 
+### 課題1拡張の場合
+
+```bash
+# プログラムのビルド
+gcc *.c -o tc
+# テストの実行
+cd /lpp_test/01test_ex; pytest -vv
+```
+
 ### 課題2の場合
 
 ```bash
@@ -31,6 +40,7 @@ gcc *.c -o pp
 cd /lpp_test/02test; pytest -vv
 ```
 * 課題2のテストは厳密すぎるので，もっと緩和できてもよい．
+* 別の考え方として，一旦ppを通したものを再度ppに通し，冪等性を見ることもできる．
 
 ### 課題3の場合
 
