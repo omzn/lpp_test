@@ -37,7 +37,7 @@ def common_task(mpl_file, out_file):
             print(f'err message [{serr}]', file=sys.stderr)
             raise ScanError
         for line in sout.splitlines():
-            formatted = re.sub(r'\s+', r'\t', line)
+            formatted = re.sub(r'\s', r'', line)
             formatted = re.sub(r'^\t', r'', formatted)
             out.append(formatted + '\n')
         out.sort()

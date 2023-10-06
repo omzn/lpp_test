@@ -1,44 +1,44 @@
-"("	16
-")"	16
-"*"	1
-"+"	1
-","	4
-"-"	1
-"."	1
-":"	3
-":="	8
-";"	26
-"="	8
-"Identifier" "com"	10
-"Identifier" "divide"	2
-"Identifier" "endflag"	5
-"Identifier" "mult"	2
-"Identifier" "sample14"	1
-"Identifier" "sub"	2
-"Identifier" "sum"	2
-"Identifier" "x"	13
-"Identifier" "y"	7
-"NAME"	44
-"NUMBER"	1
-"STRING"	19
-"begin"	7
-"boolean"	1
-"call"	4
-"char"	1
-"div"	1
-"do"	1
-"else"	7
-"end"	7
-"false"	1
-"if"	7
-"integer"	1
-"not"	1
-"or"	2
-"procedure"	4
-"program"	1
-"readln"	1
-"then"	7
-"true"	1
-"var"	2
-"while"	1
-"writeln"	13
+"("16
+")"16
+"*"1
+"+"1
+","4
+"-"1
+"."1
+":"3
+":="8
+";"26
+"="8
+"Identifier""com"10
+"Identifier""divide"2
+"Identifier""endflag"5
+"Identifier""mult"2
+"Identifier""sample14"1
+"Identifier""sub"2
+"Identifier""sum"2
+"Identifier""x"13
+"Identifier""y"7
+"NAME"44
+"NUMBER"1
+"STRING"19
+"begin"7
+"boolean"1
+"call"4
+"char"1
+"div"1
+"do"1
+"else"7
+"end"7
+"false"1
+"if"7
+"integer"1
+"not"1
+"or"2
+"procedure"4
+"program"1
+"readln"1
+"then"7
+"true"1
+"var"2
+"while"1
+"writeln"13

@@ -1,33 +1,33 @@
-"("	8
-")"	8
-"*"	1
-"+"	1
-","	3
-"-"	1
-"."	1
-":"	6
-":="	3
-";"	17
-">"	1
-"Identifier" "data"	4
-"Identifier" "goukei"	2
-"Identifier" "kazuyomikomi"	2
-"Identifier" "n"	9
-"Identifier" "s"	4
-"Identifier" "sample11pp"	1
-"Identifier" "sum"	3
-"Identifier" "wakakidasi"	2
-"NAME"	27
-"NUMBER"	4
-"STRING"	2
-"begin"	5
-"call"	3
-"do"	1
-"end"	5
-"integer"	6
-"procedure"	3
-"program"	1
-"readln"	2
-"var"	4
-"while"	1
-"writeln"	2
+"("8
+")"8
+"*"1
+"+"1
+","3
+"-"1
+"."1
+":"6
+":="3
+";"17
+">"1
+"Identifier""data"4
+"Identifier""goukei"2
+"Identifier""kazuyomikomi"2
+"Identifier""n"9
+"Identifier""s"4
+"Identifier""sample11pp"1
+"Identifier""sum"3
+"Identifier""wakakidasi"2
+"NAME"27
+"NUMBER"4
+"STRING"2
+"begin"5
+"call"3
+"do"1
+"end"5
+"integer"6
+"procedure"3
+"program"1
+"readln"2
+"var"4
+"while"1
+"writeln"2
