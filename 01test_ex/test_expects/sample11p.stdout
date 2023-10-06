@@ -1,31 +1,31 @@
-"NAME"	20
-	"Identifier" "goukei"	2
-	"Identifier" "data"	3
-	"Identifier" "wakakidasi"	2
-	"Identifier" "sum"	5
-	"Identifier" "kazuyomikomi"	2
-	"Identifier" "n"	5
-	"Identifier" "sample11p"	1
-"program"	1
-"var"	3
-"begin"	5
-"end"	5
-"procedure"	3
-"call"	3
-"while"	1
-"do"	1
-"integer"	3
-"readln"	2
-"writeln"	2
-"NUMBER"	3
-"STRING"	2
-"+"	1
-"-"	1
-">"	1
 "("	4
 ")"	4
-":="	3
-"."	1
+"+"	1
 ","	1
+"-"	1
+"."	1
 ":"	3
+":="	3
 ";"	16
+">"	1
+"Identifier" "data"	3
+"Identifier" "goukei"	2
+"Identifier" "kazuyomikomi"	2
+"Identifier" "n"	5
+"Identifier" "sample11p"	1
+"Identifier" "sum"	5
+"Identifier" "wakakidasi"	2
+"NAME"	20
+"NUMBER"	3
+"STRING"	2
+"begin"	5
+"call"	3
+"do"	1
+"end"	5
+"integer"	3
+"procedure"	3
+"program"	1
+"readln"	2
+"var"	3
+"while"	1
+"writeln"	2

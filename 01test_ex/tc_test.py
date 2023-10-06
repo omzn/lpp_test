@@ -37,11 +37,13 @@ def common_task(mpl_file, out_file):
             print(f'err message [{serr}]', file=sys.stderr)
             raise ScanError
         for line in sout.splitlines():
-            out.append(line)
+            formatted = re.sub(r'\s+', r'\t', line)
+            formatted = re.sub(r'^\t', r'', formatted)
+            out.append(formatted)
         out.sort()
         with open(out_file, mode='w') as fp:
             for l in out:
-                fp.write(re.sub(r'\s*"\s*(\S*)\s*"\s*(\d+)\s*',r'"\1"\t\2\n',l))
+                fp.write(l)
         return 0
     except ScanError:
         if re.search(r'sample0', mpl_file):

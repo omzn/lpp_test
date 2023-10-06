@@ -1,69 +1,69 @@
-"NAME"	260
-	"Identifier" "endflag"	5
-	"Identifier" "com"	10
-	"Identifier" "printtemp"	2
-	"Identifier" "printfinal"	2
-	"Identifier" "divide"	2
-	"Identifier" "y22"	3
-	"Identifier" "mult"	3
-	"Identifier" "sub"	2
-	"Identifier" "y11"	7
-	"Identifier" "y2"	17
-	"Identifier" "y1"	17
-	"Identifier" "x2"	25
-	"Identifier" "x1"	26
-	"Identifier" "sum"	3
-	"Identifier" "a2"	9
-	"Identifier" "a1"	8
-	"Identifier" "reduce"	3
-	"Identifier" "lcm"	2
-	"Identifier" "bb"	6
-	"Identifier" "aa"	6
-	"Identifier" "gcm"	4
-	"Identifier" "abs"	5
-	"Identifier" "r"	3
-	"Identifier" "b"	22
-	"Identifier" "a"	26
-	"Identifier" "lc"	13
-	"Identifier" "gc"	19
-	"Identifier" "n"	3
-	"Identifier" "m"	3
-	"Identifier" "gcmlcm"	3
-	"Identifier" "sample19"	1
-"program"	1
-"var"	9
-"begin"	21
-"end"	21
-"if"	18
-"then"	18
-"else"	15
-"procedure"	11
-"return"	2
-"call"	20
-"while"	2
-"do"	2
-"not"	1
-"or"	4
-"div"	10
-"char"	1
-"integer"	19
-"boolean"	1
-"readln"	1
-"writeln"	18
-"true"	1
-"false"	1
-"NUMBER"	21
-"STRING"	26
-"+"	1
-"-"	5
-"*"	6
-"="	19
-"<>"	1
-"<"	2
 "("	60
 ")"	60
-":="	34
-"."	1
+"*"	6
+"+"	1
 ","	87
+"-"	5
+"."	1
 ":"	21
+":="	34
 ";"	81
+"<"	2
+"<>"	1
+"="	19
+"Identifier" "a"	26
+"Identifier" "a1"	8
+"Identifier" "a2"	9
+"Identifier" "aa"	6
+"Identifier" "abs"	5
+"Identifier" "b"	22
+"Identifier" "bb"	6
+"Identifier" "com"	10
+"Identifier" "divide"	2
+"Identifier" "endflag"	5
+"Identifier" "gc"	19
+"Identifier" "gcm"	4
+"Identifier" "gcmlcm"	3
+"Identifier" "lc"	13
+"Identifier" "lcm"	2
+"Identifier" "m"	3
+"Identifier" "mult"	3
+"Identifier" "n"	3
+"Identifier" "printfinal"	2
+"Identifier" "printtemp"	2
+"Identifier" "r"	3
+"Identifier" "reduce"	3
+"Identifier" "sample19"	1
+"Identifier" "sub"	2
+"Identifier" "sum"	3
+"Identifier" "x1"	26
+"Identifier" "x2"	25
+"Identifier" "y1"	17
+"Identifier" "y11"	7
+"Identifier" "y2"	17
+"Identifier" "y22"	3
+"NAME"	260
+"NUMBER"	21
+"STRING"	26
+"begin"	21
+"boolean"	1
+"call"	20
+"char"	1
+"div"	10
+"do"	2
+"else"	15
+"end"	21
+"false"	1
+"if"	18
+"integer"	19
+"not"	1
+"or"	4
+"procedure"	11
+"program"	1
+"readln"	1
+"return"	2
+"then"	18
+"true"	1
+"var"	9
+"while"	2
+"writeln"	18
