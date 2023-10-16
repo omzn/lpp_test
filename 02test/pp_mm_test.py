@@ -49,7 +49,7 @@ def common_task(mpl_file, out_file):
                     fp.write(l+'\n')
             return 1
         else:
-            raise ParseError        
+            raise ParseError(serr)        
     except Exception as err:
         with open(out_file, mode='w') as fp:
             print(err, file=fp)
