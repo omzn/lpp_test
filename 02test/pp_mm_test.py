@@ -68,37 +68,23 @@ test_data = sorted(glob.glob("../input0[12]/*.mpl", recursive=True))
 test_valid_data = sorted(glob.glob("../input0[12]/sample[!0]*.mpl", recursive=True))
 
 @pytest.mark.timeout(10)
-@pytest.mark.parametrize(("mpl_file"), test_data)
-def test_run(mpl_file):
-    # 期待された出力が得られるかを確認．ただし，厳密すぎるため，テストに通らないからといってダメというわけではない．
+@pytest.mark.parametrize(("mpl_file"), test_valid_data)
+def test_idempotency(mpl_file):
+    # メタモーフィックテストによって，冪等性を確認．
+    # 自分自身が生成したソースコードを読み込ませると同じファイルを生成するはず．
     if not Path(TEST_RESULT_DIR).exists():
         os.mkdir(TEST_RESULT_DIR)
     out_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out")
     res = common_task(mpl_file, out_file)
     if res == 0:
-        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
-        with open(out_file) as ofp, open(expect_file) as efp:
-            assert ofp.read() == efp.read()
+        out2_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out2")
+        res1 = common_task(out_file, out2_file)
+        if res1 == 0:
+            with open(out2_file) as ofp2, open(out_file) as ofp1:
+                assert ofp2.read() == ofp1.read()
+        else:
+            # 実行結果がエラーになるのであれば，それはダメ
+            assert False
     else:
-        # エラーの行番号が正しいかを確認
-        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stderr")
-        with open(out_file) as ofp, open(expect_file) as efp:
-            o =  re.search(r'(\d+)',ofp.read()).group()
-            e =  re.search(r'(\d+)',efp.read()).group()
-            assert o == e
-
-def test_no_param():
-    exec = Path(targetpath).joinpath(target)
-    exec_res = command("{}".format(exec))
-    sout = exec_res.pop(0)
-    serr = exec_res.pop(0)
-    assert serr 
-
-def test_not_valid_file():
-    exec = Path(targetpath).joinpath(target)
-    exec_res = command("{} hogehoge".format(exec))
-    sout = exec_res.pop(0)
-    serr = exec_res.pop(0)
-    assert serr 
-
-
+        # エラーになるわけがないテストデータのみを与えるので，ここは無条件にダメ
+        assert False
