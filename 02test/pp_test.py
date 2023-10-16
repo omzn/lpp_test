@@ -8,7 +8,7 @@ import re
 from pathlib import Path
 
 target = "pp"
-targetpath = "/workspace"
+targetpath = "/workspaces"
 
 class ParseError(Exception):
     pass
