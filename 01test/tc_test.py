@@ -34,7 +34,7 @@ def common_task(mpl_file, out_file):
         sout = exec_res.pop(0)
         serr = exec_res.pop(0)
         if serr:
-            raise ScanError
+            raise ScanError(serr)
         for line in sout.splitlines():
             formatted = re.sub(r'\s*"\s*(\S*)\s*"\s*(\d+)\s*', r'"\1"\t\2\n', line)
             out.append(formatted)
@@ -52,7 +52,7 @@ def common_task(mpl_file, out_file):
                     fp.write(l+'\n')
             return 1
         else:
-            raise ScanError        
+            raise ScanError(serr)
     except Exception as err:
         with open(out_file, mode='w') as fp:
             print(err, file=fp)

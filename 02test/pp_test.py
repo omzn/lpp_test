@@ -33,7 +33,7 @@ def common_task(mpl_file, out_file):
         sout = exec_res.pop(0)
         serr = exec_res.pop(0)
         if serr:
-            raise ParseError
+            raise ParseError(serr)
         for line in sout.splitlines():
             out.append(line)
         with open(out_file, mode='w') as fp:
@@ -49,7 +49,7 @@ def common_task(mpl_file, out_file):
                     fp.write(l+'\n')
             return 1
         else:
-            raise ParseError        
+            raise ParseError(serr)
     except Exception as err:
         with open(out_file, mode='w') as fp:
             print(err, file=fp)

@@ -33,7 +33,7 @@ def common_task(mpl_file, out_file):
         sout = exec_res.pop(0)
         serr = exec_res.pop(0)
         if serr:
-            raise SemanticError
+            raise SemanticError(serr)
         for line in sout.splitlines():
             out.append(re.sub(r'\s',r'',line))
         if out != []:
@@ -44,7 +44,7 @@ def common_task(mpl_file, out_file):
                     fp.write(l+'\n')
             return 0
         else:
-            raise SemanticError
+            raise SemanticError(serr)
     except SemanticError:
         if re.search(r'sample0', mpl_file):
             for line in serr.splitlines():
@@ -54,7 +54,7 @@ def common_task(mpl_file, out_file):
                     fp.write(l+'\n')
             return 1
         else:
-            raise SemanticError
+            raise SemanticError(serr)
     except Exception as err:
         with open(out_file, mode='w') as fp:
             print(err, file=fp)
