@@ -1,19 +1,20 @@
+"""課題1拡張用テスト"""
 import os
-import glob
-import json
-import subprocess
-import pytest
 import sys
 import re
 from pathlib import Path
+import glob
+import subprocess
+import pytest
 
-target = "tc"
-targetPath = "/workspaces"
+TARGET = "tc"
+TARGETPATH = "/workspaces"
 
 class ScanError(Exception):
-    pass
+    """字句解析エラーハンドラ"""
 
 def command(cmd):
+    """コマンドの実行"""
     try:
         result = subprocess.run(cmd, shell=True, check=False,
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -22,41 +23,39 @@ def command(cmd):
 #            yield line
         return [result.stdout,result.stderr]
     except subprocess.CalledProcessError:
-        print('外部プログラムの実行に失敗しました [' + cmd + ']', file=sys.stderr)
+        print(f"外部プログラムの実行に失敗しました [{cmd}]", file=sys.stderr)
         sys.exit(1)
 
 def common_task(mpl_file, out_file):
+    """共通して実行するタスク"""
     try:
 #        tc = Path(__file__).parent.parent.joinpath("tc")
-        exec = Path(targetPath).joinpath(target)
-        exec_res = command(f"{exec} {mpl_file}")
+        exe = Path(TARGETPATH) / Path(TARGET)
+        exec_res = command(f"{exe} {mpl_file}")
         out = []
         sout = exec_res.pop(0)
         serr = exec_res.pop(0)
-        if len(serr) > 0:
-            print(f'err message [{serr}]', file=sys.stderr)
+        if serr:
             raise ScanError(serr)
         for line in sout.splitlines():
-            formatted = re.sub(r'\s', r'', line)
-            formatted = re.sub(r'^\t', r'', formatted)
-            out.append(formatted + '\n')
+            formatted = re.sub(r'\s*"\s*(\S*)\s*"\s*(\d+)\s*', r'"\1"\t\2\n', line)
+            out.append(formatted)
         out.sort()
-        with open(out_file, mode='w') as fp:
+        with open(out_file, mode='w',encoding=ascii) as fp:
             for l in out:
                 fp.write(l)
         return 0
-    except ScanError:
+    except ScanError as exc:
         if re.search(r'sample0', mpl_file):
             for line in serr.splitlines():
                 out.append(line)
-            with open(out_file, mode='w') as fp:
+            with open(out_file, mode='w',encoding=ascii) as fp:
                 for l in out:
                     fp.write(l+'\n')
             return 1
-        else:
-            raise ScanError(serr)
+        raise ScanError(serr) from exc
     except Exception as err:
-        with open(out_file, mode='w') as fp:
+        with open(out_file, mode='w',encoding=ascii) as fp:
             print(err, file=fp)
         raise err
 
@@ -72,28 +71,31 @@ test_data = sorted(glob.glob("../input01/*.mpl", recursive=True))
 @pytest.mark.timeout(10)
 @pytest.mark.parametrize(("mpl_file"), test_data)
 def test_run(mpl_file):
+    """準備したテストケースを全て実行する．"""
     if not Path(TEST_RESULT_DIR).exists():
         os.mkdir(TEST_RESULT_DIR)
     out_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out")
     res = common_task(mpl_file, out_file)
     if res == 0:
         expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
-        with open(out_file) as ofp, open(expect_file) as efp:
+        with open(out_file, encoding=ascii) as ofp, open(expect_file, encoding=ascii) as efp:
             assert ofp.read() == efp.read()
     else:
-        with open(out_file) as ofp:
+        with open(out_file, encoding=ascii) as ofp:
             assert not ofp.read() == ''
 
 def test_no_param():
-    exec = Path(targetPath).joinpath(target)
-    exec_res = command("{}".format(exec))
-    sout = exec_res.pop(0)
+    """引数を付けずに実行するテスト"""
+    exe = Path(TARGETPATH) / Path(TARGET)
+    exec_res = command(f"{exe}")
+    exec_res.pop(0)
     serr = exec_res.pop(0)
     assert serr
 
 def test_not_valid_file():
-    exec = Path(targetPath).joinpath(target)
-    exec_res = command("{} hogehoge".format(exec))
-    sout = exec_res.pop(0)
+    """存在しないファイルを引数にした場合のテスト"""
+    exe = Path(TARGETPATH) / Path(TARGET)
+    exec_res = command(f"{exe} hogehoge")
+    exec_res.pop(0)
     serr = exec_res.pop(0)
     assert serr

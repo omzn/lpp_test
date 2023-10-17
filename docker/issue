@@ -16,4 +16,8 @@
   # ./mpplc /lpp_test/input03/sample35.mpl
   (run casl2/comet2)     
   # c2c2 sample35.csl
- 
+
+################################
+### omzn/kit-lpp:multiple_v2 ###
+################################
+

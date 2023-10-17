@@ -1,19 +1,22 @@
+"""課題2用メタモーフィックテスト"""
+# 課題2では，1回実行した出力を再度入力として実行させても
+# 全く同一の出力が得られるべき
 import os
 import glob
-import json
 import subprocess
-import pytest
 import sys
 import re
 from pathlib import Path
+import pytest
 
-target = "pp"
-targetpath = "/workspaces"
+TARGET = "pp"
+TARGETPATH = "/workspaces"
 
 class ParseError(Exception):
-    pass
+    """構文エラーハンドラ"""
 
 def command(cmd):
+    """コマンドの実行"""
     try:
         result = subprocess.run(cmd, shell=True, check=False,
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
@@ -22,36 +25,36 @@ def command(cmd):
 #            yield line
         return [result.stdout,result.stderr]
     except subprocess.CalledProcessError:
-        print('外部プログラムの実行に失敗しました [' + cmd + ']', file=sys.stderr)
+        print(f"外部プログラムの実行に失敗しました [{cmd}]", file=sys.stderr)
         sys.exit(1)
 
 def common_task(mpl_file, out_file):
+    """共通して実行するタスク"""
     try:
-        exec = Path(targetpath).joinpath(target)
-        exec_res = command("{} {}".format(exec,mpl_file))
+        exe = Path(TARGETPATH) / Path(TARGET)
+        exec_res = command(f"{exe} {mpl_file}")
         out = []
         sout = exec_res.pop(0)
         serr = exec_res.pop(0)
         if serr:
-            raise ParseError
+            raise ParseError(serr)
         for line in sout.splitlines():
             out.append(line)
-        with open(out_file, mode='w') as fp:
+        with open(out_file, mode='w', encoding=ascii) as fp:
             for l in out:
                 fp.write(l+'\n')
         return 0
-    except ParseError:
+    except ParseError as exc:
         if re.search(r'sample0', mpl_file):
             for line in serr.splitlines():
                 out.append(line)
-            with open(out_file, mode='w') as fp:
+            with open(out_file, mode='w', encoding=ascii) as fp:
                 for l in out:
                     fp.write(l+'\n')
             return 1
-        else:
-            raise ParseError(serr)        
+        raise ParseError(serr) from exc
     except Exception as err:
-        with open(out_file, mode='w') as fp:
+        with open(out_file, mode='w', encoding=ascii) as fp:
             print(err, file=fp)
         raise err
 
@@ -70,17 +73,19 @@ test_valid_data = sorted(glob.glob("../input0[12]/sample[!0]*.mpl", recursive=Tr
 @pytest.mark.timeout(10)
 @pytest.mark.parametrize(("mpl_file"), test_valid_data)
 def test_idempotency(mpl_file):
-    # メタモーフィックテストによって，冪等性を確認．
+    """メタモーフィックテストによって，冪等性を確認"""
     # 自分自身が生成したソースコードを読み込ませると同じファイルを生成するはず．
     if not Path(TEST_RESULT_DIR).exists():
         os.mkdir(TEST_RESULT_DIR)
     out_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out")
+    # 1回目の実行
     res = common_task(mpl_file, out_file)
     if res == 0:
         out2_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out2")
+       # 2回目の実行
         res1 = common_task(out_file, out2_file)
         if res1 == 0:
-            with open(out2_file) as ofp2, open(out_file) as ofp1:
+            with open(out2_file,encoding=ascii) as ofp2, open(out_file,encoding=ascii) as ofp1:
                 assert ofp2.read() == ofp1.read()
         else:
             # 実行結果がエラーになるのであれば，それはダメ
