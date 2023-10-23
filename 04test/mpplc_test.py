@@ -44,14 +44,14 @@ def common_task(mpl_file, out_file):
             out = []
             for line in serr.splitlines():
                 out.append(line)
-            with open(out_file, mode='w',encoding=ascii) as fp:
+            with open(out_file, mode='w',encoding='ascii') as fp:
                 for l in out:
                     fp.write(l+'\n')
             os.remove(cslfile)
             return 1
         raise CompileError(serr) from exc
     except Exception as err:
-        with open(out_file, mode='w',encoding=ascii) as fp:
+        with open(out_file, mode='w',encoding='ascii') as fp:
             print(err, file=fp)
         raise err
 
@@ -80,7 +80,7 @@ def test_mpplc_run(mpl_file):
         assert os.path.getsize(casl2file) > 0
     else:
         expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).name + ".stderr")
-        with open(out_file,encoding=ascii) as ofp, open(expect_file,encoding=ascii) as efp:
+        with open(out_file,encoding='ascii') as ofp, open(expect_file,encoding='ascii') as efp:
             o =  re.search(r'(\d+)',ofp.read()).group()
             e =  re.search(r'(\d+)',efp.read()).group()
             assert o == e

@@ -40,7 +40,7 @@ def common_task(mpl_file, out_file):
             raise ParseError(serr)
         for line in sout.splitlines():
             out.append(line)
-        with open(out_file, mode='w', encoding=ascii) as fp:
+        with open(out_file, mode='w', encoding='ascii') as fp:
             for l in out:
                 fp.write(l+'\n')
         return 0
@@ -48,13 +48,13 @@ def common_task(mpl_file, out_file):
         if re.search(r'sample0', mpl_file):
             for line in serr.splitlines():
                 out.append(line)
-            with open(out_file, mode='w', encoding=ascii) as fp:
+            with open(out_file, mode='w', encoding='ascii') as fp:
                 for l in out:
                     fp.write(l+'\n')
             return 1
         raise ParseError(serr) from exc
     except Exception as err:
-        with open(out_file, mode='w', encoding=ascii) as fp:
+        with open(out_file, mode='w', encoding='ascii') as fp:
             print(err, file=fp)
         raise err
 
@@ -85,7 +85,7 @@ def test_idempotency(mpl_file):
        # 2回目の実行
         res1 = common_task(out_file, out2_file)
         if res1 == 0:
-            with open(out2_file,encoding=ascii) as ofp2, open(out_file,encoding=ascii) as ofp1:
+            with open(out2_file,encoding='ascii') as ofp2, open(out_file,encoding='ascii') as ofp1:
                 assert ofp2.read() == ofp1.read()
         else:
             # 実行結果がエラーになるのであれば，それはダメ

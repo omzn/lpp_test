@@ -41,7 +41,7 @@ def common_task(mpl_file, out_file):
             formatted = re.sub(r'\s*"\s*(\S*)\s*"\s*(\d+)\s*', r'"\1"\t\2\n', line)
             out.append(formatted)
         out.sort()
-        with open(out_file, mode='w',encoding=ascii) as fp:
+        with open(out_file, mode='w',encoding='ascii') as fp:
             for l in out:
                 fp.write(l)
         return 0
@@ -49,13 +49,13 @@ def common_task(mpl_file, out_file):
         if re.search(r'sample0', mpl_file):
             for line in serr.splitlines():
                 out.append(line)
-            with open(out_file, mode='w',encoding=ascii) as fp:
+            with open(out_file, mode='w',encoding='ascii') as fp:
                 for l in out:
                     fp.write(l+'\n')
             return 1
         raise ScanError(serr) from exc
     except Exception as err:
-        with open(out_file, mode='w',encoding=ascii) as fp:
+        with open(out_file, mode='w',encoding='ascii') as fp:
             print(err, file=fp)
         raise err
 
@@ -78,10 +78,10 @@ def test_run(mpl_file):
     res = common_task(mpl_file, out_file)
     if res == 0:
         expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
-        with open(out_file, encoding=ascii) as ofp, open(expect_file, encoding=ascii) as efp:
+        with open(out_file, encoding='ascii') as ofp, open(expect_file, encoding='ascii') as efp:
             assert ofp.read() == efp.read()
     else:
-        with open(out_file, encoding=ascii) as ofp:
+        with open(out_file, encoding='ascii') as ofp:
             assert not ofp.read() == ''
 
 def test_no_param():

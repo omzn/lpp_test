@@ -30,23 +30,23 @@ def common_task(casl2_file, out_file):
         assembler_text = command(f"node {c2c2} -n -c -a {casl2_file}")
         if "DEFINED SYMBOLS" not in assembler_text:
             raise Casl2AssembleError("Failed to compile")
-        with open("input.json",encoding=ascii) as fp:
+        with open("input.json",encoding='ascii') as fp:
             inp = json.load(fp)
         inputparams = ''
         if Path(casl2_file).name in inp.keys():
             inputparams = ' '.join(list(inp[Path(casl2_file).name]))
         terminal_text = command(f"node {c2c2} -n -q -r {casl2_file} {inputparams}")
-        with open(out_file, mode='w',encoding=ascii) as fp:
+        with open(out_file, mode='w',encoding='ascii') as fp:
             for line in terminal_text:
                 fp.write(line + '\n')
     except Casl2AssembleError as exc:
-        with open(out_file, mode='w',encoding=ascii) as fp:
+        with open(out_file, mode='w',encoding='ascii') as fp:
             fp.write("============ASSEMBLE ERROR==============\n")
             for line in assembler_text:
                 fp.write(line + '\n')
         raise Casl2AssembleError("Assemble Error") from exc
     except Exception as err:
-        with open(out_file, mode='w',encoding=ascii) as fp:
+        with open(out_file, mode='w',encoding='ascii') as fp:
             print(err, file=fp)
         raise err
 
@@ -68,5 +68,5 @@ def test_c2c2_run(casl2_file):
     out_file = Path(TEST_RESULT_DIR).joinpath(Path(casl2_file).name + ".out")
     common_task(casl2_file, out_file)
     expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(casl2_file).name + ".out")
-    with open(out_file,encoding=ascii) as ofp, open(expect_file,encoding=ascii) as efp:
+    with open(out_file,encoding='ascii') as ofp, open(expect_file,encoding='ascii') as efp:
         assert ofp.read() == efp.read()

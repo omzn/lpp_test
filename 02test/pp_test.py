@@ -38,7 +38,7 @@ def common_task(mpl_file, out_file):
             raise ParseError(serr)
         for line in sout.splitlines():
             out.append(line)
-        with open(out_file, mode='w', encoding=ascii) as fp:
+        with open(out_file, mode='w', encoding='ascii') as fp:
             for l in out:
                 fp.write(l+'\n')
         return 0
@@ -46,13 +46,13 @@ def common_task(mpl_file, out_file):
         if re.search(r'sample0', mpl_file):
             for line in serr.splitlines():
                 out.append(line)
-            with open(out_file, mode='w', encoding=ascii) as fp:
+            with open(out_file, mode='w', encoding='ascii') as fp:
                 for l in out:
                     fp.write(l+'\n')
             return 1
         raise ParseError(serr) from exc
     except Exception as err:
-        with open(out_file, mode='w', encoding=ascii) as fp:
+        with open(out_file, mode='w', encoding='ascii') as fp:
             print(err, file=fp)
         raise err
 
@@ -81,13 +81,13 @@ def test_run(mpl_file):
     # 正常終了した場合
     if res == 0:
         expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
-        with open(out_file,encoding=ascii) as ofp, open(expect_file,encoding=ascii) as efp:
+        with open(out_file,encoding='ascii') as ofp, open(expect_file,encoding='ascii') as efp:
             assert ofp.read() == efp.read()
     # 異常終了した場合
     else:
         # エラーの行番号が正しいかを確認
         expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stderr")
-        with open(out_file,encoding=ascii) as ofp, open(expect_file,encoding=ascii) as efp:
+        with open(out_file,encoding='ascii') as ofp, open(expect_file,encoding='ascii') as efp:
             o =  re.search(r'(\d+)',ofp.read()).group()
             e =  re.search(r'(\d+)',efp.read()).group()
             assert o == e
