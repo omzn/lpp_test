@@ -1,55 +1,57 @@
+"""課題4用コンパイルテスト"""
 import os
-import glob
-import json
-import subprocess
-import pytest
 import sys
 import re
 from pathlib import Path
+import glob
+import subprocess
+import pytest
 
-target = "mpplc"
-targetpath = "/workspaces"
+TARGET = "mpplc"
+TARGETPATH = "/workspaces"
 
 class CompileError(Exception):
-    pass
+    """コンパイルエラーハンドラ"""
 
 def command(cmd):
+    """コマンドの実行"""
     try:
         result = subprocess.run(cmd, shell=True, check=False,
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                universal_newlines=True, text=True)
+                universal_newlines=True)
         return [result.stdout,result.stderr]
     except subprocess.CalledProcessError:
-        print('外部プログラムの実行に失敗しました [' + cmd + ']', file=sys.stderr)
+        print(f"外部プログラムの実行に失敗しました [{cmd}]", file=sys.stderr)
         sys.exit(1)
 
 def common_task(mpl_file, out_file):
+    """共通して実行するタスク"""
     try:
         #mpplc = Path(__file__).parent.parent.joinpath("mpplc")
-        exec = Path(targetpath).joinpath(target)
+        exe = Path(TARGETPATH) / Path(TARGET)
+        exec_res = command(f"{exe} {mpl_file}")
         cslfile = Path(mpl_file).stem + ".csl"
-        exec_res = command("{} {}".format(exec,mpl_file))
         out = []
-        sout = exec_res.pop(0)
+        exec_res.pop(0)
         serr = exec_res.pop(0)
         if serr:
-            raise CompileError
-        casl2file = Path(__file__).parent.joinpath(CASL2_FILE_DIR).joinpath(cslfile)
+            raise CompileError(serr)
+        casl2file = Path(__file__).parent / Path(CASL2_FILE_DIR) / Path(cslfile)
         os.rename(cslfile, casl2file)
         return 0
-    except CompileError:
+    except CompileError as exc:
         if re.search(r'sample0', mpl_file):
+            out = []
             for line in serr.splitlines():
                 out.append(line)
-            with open(out_file, mode='w') as fp:
+            with open(out_file, mode='w',encoding=ascii) as fp:
                 for l in out:
                     fp.write(l+'\n')
             os.remove(cslfile)
             return 1
-        else:
-            raise CompileError        
+        raise CompileError(serr) from exc
     except Exception as err:
-        with open(out_file, mode='w') as fp:
+        with open(out_file, mode='w',encoding=ascii) as fp:
             print(err, file=fp)
         raise err
 
@@ -65,7 +67,8 @@ test_data = sorted(glob.glob("../input*/*.mpl", recursive=True))
 
 @pytest.mark.timeout(10)
 @pytest.mark.parametrize(("mpl_file"), test_data)
-def test_run(mpl_file):
+def test_mpplc_run(mpl_file):
+    """mpplcを実行する"""
     if not Path(TEST_RESULT_DIR).exists():
         os.mkdir(TEST_RESULT_DIR)
     if not Path(CASL2_FILE_DIR).exists():
@@ -73,25 +76,27 @@ def test_run(mpl_file):
     out_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).name + ".out")
     res = common_task(mpl_file, out_file)
     if res == 0:
-        casl2file = Path(__file__).parent.joinpath(CASL2_FILE_DIR).joinpath(Path(mpl_file).stem + ".csl")
+        casl2file = Path(__file__).parent / Path(CASL2_FILE_DIR) / Path(Path(mpl_file).stem + ".csl")
         assert os.path.getsize(casl2file) > 0
     else:
         expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).name + ".stderr")
-        with open(out_file) as ofp, open(expect_file) as efp:
+        with open(out_file,encoding=ascii) as ofp, open(expect_file,encoding=ascii) as efp:
             o =  re.search(r'(\d+)',ofp.read()).group()
             e =  re.search(r'(\d+)',efp.read()).group()
             assert o == e
 
 def test_no_param():
-    exec = Path(targetpath).joinpath(target)
-    exec_res = command("{}".format(exec))
-    sout = exec_res.pop(0)
+    """引数を付けずに実行するテスト"""
+    exe = Path(TARGETPATH) / Path(TARGET)
+    exec_res = command(f"{exe}")
+    exec_res.pop(0)
     serr = exec_res.pop(0)
-    assert serr 
+    assert serr
 
 def test_not_valid_file():
-    exec = Path(targetpath).joinpath(target)
-    exec_res = command("{} hogehoge".format(exec))
-    sout = exec_res.pop(0)
+    """存在しないファイルを引数にした場合のテスト"""
+    exe = Path(TARGETPATH) / Path(TARGET)
+    exec_res = command(f"{exe} hogehoge")
+    exec_res.pop(0)
     serr = exec_res.pop(0)
-    assert serr 
+    assert serr
