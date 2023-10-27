@@ -38,7 +38,7 @@ def common_task(mpl_file, out_file):
         if serr:
             raise ScanError(serr)
         for line in sout.splitlines():
-            formatted = re.sub(r'\s*', r'', line)
+            formatted = re.sub(r'[\t ]*', r'', line)
             out.append(formatted)
         out.sort()
         with open(out_file, mode='w',encoding='ascii') as fp:
