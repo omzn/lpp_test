@@ -38,12 +38,12 @@ def common_task(mpl_file, out_file):
         if serr:
             raise ScanError(serr)
         for line in sout.splitlines():
-            formatted = re.sub(r'\s*', r'', line) + '\n'
+            formatted = re.sub(r'\s+', r'', line)
             out.append(formatted)
         out.sort()
         with open(out_file, mode='w',encoding='ascii') as fp:
             for l in out:
-                fp.write(l)
+                fp.write(l+'\n')
         return 0
     except ScanError as exc:
         if re.search(r'sample0', mpl_file):
