@@ -68,6 +68,16 @@ TEST_EXPECT_DIR = "test_expects"
 
 test_data = sorted(glob.glob("../input01/*.mpl", recursive=True))
 
+def test_compile():
+    """指定ディレクトリでコンパイルができるかをテスト"""
+    cwd = os.getcwd()
+    os.chdir(TARGETPATH)
+    exec_res = command(f"gcc -o {TARGET} *.c")
+    os.chdir(cwd)
+    exec_res.pop(0)
+    serr = exec_res.pop(0)
+    assert not serr
+
 @pytest.mark.timeout(10)
 @pytest.mark.parametrize(("mpl_file"), test_data)
 def test_run(mpl_file):
