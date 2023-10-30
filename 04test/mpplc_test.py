@@ -65,6 +65,32 @@ CASL2_FILE_DIR  = "casl2"
 
 test_data = sorted(glob.glob("../input*/*.mpl", recursive=True))
 
+def test_compile():
+    """指定ディレクトリでコンパイルができるかをテスト"""
+    cwd = os.getcwd()
+    os.chdir(TARGETPATH)
+    exec_res = command(f"gcc -o {TARGET} *.c")
+    os.chdir(cwd)
+    exec_res.pop(0)
+    serr = exec_res.pop(0)
+    assert not serr
+
+def test_no_param():
+    """引数を付けずに実行するテスト"""
+    exe = Path(TARGETPATH) / Path(TARGET)
+    exec_res = command(f"{exe}")
+    exec_res.pop(0)
+    serr = exec_res.pop(0)
+    assert serr
+
+def test_not_valid_file():
+    """存在しないファイルを引数にした場合のテスト"""
+    exe = Path(TARGETPATH) / Path(TARGET)
+    exec_res = command(f"{exe} hogehoge")
+    exec_res.pop(0)
+    serr = exec_res.pop(0)
+    assert serr
+
 @pytest.mark.timeout(10)
 @pytest.mark.parametrize(("mpl_file"), test_data)
 def test_mpplc_run(mpl_file):
@@ -84,19 +110,3 @@ def test_mpplc_run(mpl_file):
             o =  re.search(r'(\d+)',ofp.read()).group()
             e =  re.search(r'(\d+)',efp.read()).group()
             assert o == e
-
-def test_no_param():
-    """引数を付けずに実行するテスト"""
-    exe = Path(TARGETPATH) / Path(TARGET)
-    exec_res = command(f"{exe}")
-    exec_res.pop(0)
-    serr = exec_res.pop(0)
-    assert serr
-
-def test_not_valid_file():
-    """存在しないファイルを引数にした場合のテスト"""
-    exe = Path(TARGETPATH) / Path(TARGET)
-    exec_res = command(f"{exe} hogehoge")
-    exec_res.pop(0)
-    serr = exec_res.pop(0)
-    assert serr

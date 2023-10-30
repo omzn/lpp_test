@@ -78,22 +78,6 @@ def test_compile():
     serr = exec_res.pop(0)
     assert not serr
 
-@pytest.mark.timeout(10)
-@pytest.mark.parametrize(("mpl_file"), test_data)
-def test_run(mpl_file):
-    """準備したテストケースを全て実行する．"""
-    if not Path(TEST_RESULT_DIR).exists():
-        os.mkdir(TEST_RESULT_DIR)
-    out_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out")
-    res = common_task(mpl_file, out_file)
-    if res == 0:
-        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
-        with open(out_file, encoding='ascii') as ofp, open(expect_file, encoding='ascii') as efp:
-            assert ofp.read() == efp.read()
-    else:
-        with open(out_file, encoding='ascii') as ofp:
-            assert not ofp.read() == ''
-
 def test_no_param():
     """引数を付けずに実行するテスト"""
     exe = Path(TARGETPATH) / Path(TARGET)
@@ -109,3 +93,19 @@ def test_not_valid_file():
     exec_res.pop(0)
     serr = exec_res.pop(0)
     assert serr
+
+@pytest.mark.timeout(10)
+@pytest.mark.parametrize(("mpl_file"), test_data)
+def test_run(mpl_file):
+    """準備したテストケースを全て実行する．"""
+    if not Path(TEST_RESULT_DIR).exists():
+        os.mkdir(TEST_RESULT_DIR)
+    out_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out")
+    res = common_task(mpl_file, out_file)
+    if res == 0:
+        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
+        with open(out_file, encoding='ascii') as ofp, open(expect_file, encoding='ascii') as efp:
+            assert ofp.read() == efp.read()
+    else:
+        with open(out_file, encoding='ascii') as ofp:
+            assert not ofp.read() == ''
