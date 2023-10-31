@@ -2,7 +2,7 @@ FROM gcc:11.4.0
 RUN apt update
 #RUN curl -sL https://deb.nodesource.com/setup_lts.x | bash - 
 RUN apt install -y nodejs npm
-RUN apt install -y gdb python3-pip python3-pytest python3-pytest-timeout tmux vim less cmake
+RUN apt install -y gdb python3-pip python3-pytest python3-pytest-timeout
 RUN echo '#!/bin/sh\npython3 -m pytest $1 $2 $3 $4 $5 $6 $7 $8 $9' > /usr/local/bin/pytest && chmod +x /usr/local/bin/pytest
 RUN cd / && git clone https://github.com/omzn/casljs && cd /casljs && npm ci
 RUN cd / && git clone https://github.com/omzn/lpp_test 
@@ -12,4 +12,4 @@ RUN cd / && git clone https://github.com/omzn/lpp_test
 #COPY issue /etc/issue
 COPY lpptest /usr/local/bin/lpptest
 ENTRYPOINT [ "lpptest" ]
-CMD ["01test", "-vv"]
+CMD ["01test", "-vv", "", "", "", ""]

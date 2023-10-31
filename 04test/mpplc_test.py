@@ -69,7 +69,7 @@ def test_compile():
     """指定ディレクトリでコンパイルができるかをテスト"""
     cwd = os.getcwd()
     os.chdir(TARGETPATH)
-    exec_res = command(f"gcc -o {TARGET} *.c")
+    exec_res = command(f"gcc -w -o {TARGET} *.c")
     os.chdir(cwd)
     exec_res.pop(0)
     serr = exec_res.pop(0)

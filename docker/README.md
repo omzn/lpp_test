@@ -1,6 +1,6 @@
 # Dockerfile for KIT-LPP
 
-* gcc:12.2.0
+* gcc:11.4.0
 
 # How to build
 

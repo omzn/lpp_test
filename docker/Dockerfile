@@ -10,4 +10,4 @@ RUN cd /lpp_test/docker && ./mk_motd.sh aqua.png
 RUN echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/motd && cat /etc/issue ' >> /etc/bash.bashrc
 COPY bashrc /root/.bashrc
 COPY issue /etc/issue
-COPY lpptest /usr/local/bin/lpptest
+COPY lpptest /usr/local/bin/lpptest 
