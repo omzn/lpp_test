@@ -40,8 +40,9 @@ def common_task(mpl_file, out_file):
         for line in sout.splitlines():
             if re.search(r'Identifier',line, re.I):
                 continue
-            formatted = re.sub(r'\s*"\s*(\S*)\s*"\s*(\d+)\s*', r'"\1"\t\2\n', line)
-            out.append(formatted)
+            if re.search(r'\s*"\s*\S*\s*"\s*\d+\s*',line):
+                formatted = re.sub(r'\s*"\s*(\S*)\s*"\s*(\d+)\s*', r'"\1"\t\2\n', line)
+                out.append(formatted)
         out.sort()
         with open(out_file, mode='w',encoding='ascii') as fp:
             for l in out:
