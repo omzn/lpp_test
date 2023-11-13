@@ -13,3 +13,7 @@ $ docker buildx use aquatan
 $ docker buildx inspect --bootstrap
 $ docker buildx build --platform linux/amd64,linux/arm64 -t omzn/kit-lpp:v2 --push .  
 ```
+
+docker login se.is.kit.ac.jp
+docker tag omzn/kit-lpp:v2 se.is.kit.ac.jp/o_mizuno/kit-lpp:v2
+docker push se.is.kit.ac.jp/o_mizuno/kit-lpp:v2
