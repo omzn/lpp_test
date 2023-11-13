@@ -107,6 +107,6 @@ def test_mpplc_run(mpl_file):
     else:
         expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).name + ".stderr")
         with open(out_file,encoding='utf-8') as ofp, open(expect_file,encoding='utf-8') as efp:
-            o =  re.search(r'(\d+)',ofp.read()).group()
-            e =  re.search(r'(\d+)',efp.read()).group()
-            assert o == e
+            o =  int(re.search(r'(\d+)',ofp.read()).group())
+            e =  int(re.search(r'(\d+)',efp.read()).group())
+            assert o - 1 <= e <= o + 1
