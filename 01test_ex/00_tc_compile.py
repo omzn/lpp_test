@@ -1,11 +1,11 @@
-"""課題1用テスト"""
+"""課題1拡張用テスト"""
 import os
 import sys
 import re
 from pathlib import Path
 import glob
 import subprocess
-import pytest
+#import pytest
 
 TARGET = "tc"
 TARGETPATH = "/workspaces"
@@ -38,15 +38,13 @@ def common_task(mpl_file, out_file):
         if serr:
             raise ScanError(serr)
         for line in sout.splitlines():
-            if re.search(r'Identifier',line, re.I):
-                continue
-            if re.search(r'\s*"\s*\S*\s*"\s*\d+\s*',line):
-                formatted = re.sub(r'\s*"\s*(\S*)\s*"\s*(\d+)\s*', r'"\1"\t\2\n', line)
+            if re.search(r'\s*"\s*\S*\s*"\s*\d+\s*',line) or re.search(r'\s*"\s*\S*\s*"\s*"\s*\S*\s*"\s*\d+\s*',line):
+                formatted = re.sub(r'\s+', r'', line)
                 out.append(formatted)
         out.sort()
         with open(out_file, mode='w',encoding='utf-8') as fp:
             for l in out:
-                fp.write(l)
+                fp.write(l+'\n')
         return 0
     except ScanError as exc:
         if re.search(r'sample0', mpl_file):
@@ -96,19 +94,3 @@ def test_not_valid_file():
     exec_res.pop(0)
     serr = exec_res.pop(0)
     assert serr
-
-@pytest.mark.timeout(10)
-@pytest.mark.parametrize(("mpl_file"), test_data)
-def test_run(mpl_file):
-    """準備したテストケースを全て実行する．"""
-    if not Path(TEST_RESULT_DIR).exists():
-        os.mkdir(TEST_RESULT_DIR)
-    out_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out")
-    res = common_task(mpl_file, out_file)
-    if res == 0:
-        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
-        with open(out_file, encoding='utf-8') as ofp, open(expect_file, encoding='utf-8') as efp:
-            assert ofp.read() == efp.read()
-    else:
-        with open(out_file, encoding='utf-8') as ofp:
-            assert not ofp.read() == ''

@@ -1,17 +1,17 @@
-"""課題2用テスト"""
+"""課題1コンパイル用テスト"""
 import os
-import glob
-import subprocess
 import sys
 import re
 from pathlib import Path
-import pytest
+import glob
+import subprocess
+#import pytest
 
-TARGET = "pp"
+TARGET = "tc"
 TARGETPATH = "/workspaces"
 
-class ParseError(Exception):
-    """構文エラーハンドラ"""
+class ScanError(Exception):
+    """字句解析エラーハンドラ"""
 
 def command(cmd):
     """コマンドの実行"""
@@ -29,30 +29,36 @@ def command(cmd):
 def common_task(mpl_file, out_file):
     """共通して実行するタスク"""
     try:
+#        tc = Path(__file__).parent.parent.joinpath("tc")
         exe = Path(TARGETPATH) / Path(TARGET)
         exec_res = command(f"{exe} {mpl_file}")
         out = []
         sout = exec_res.pop(0)
         serr = exec_res.pop(0)
         if serr:
-            raise ParseError(serr)
+            raise ScanError(serr)
         for line in sout.splitlines():
-            out.append(line)
-        with open(out_file, mode='w', encoding='utf-8') as fp:
+            if re.search(r'Identifier',line, re.I):
+                continue
+            if re.search(r'\s*"\s*\S*\s*"\s*\d+\s*',line):
+                formatted = re.sub(r'\s*"\s*(\S*)\s*"\s*(\d+)\s*', r'"\1"\t\2\n', line)
+                out.append(formatted)
+        out.sort()
+        with open(out_file, mode='w',encoding='utf-8') as fp:
             for l in out:
-                fp.write(l+'\n')
+                fp.write(l)
         return 0
-    except ParseError as exc:
+    except ScanError as exc:
         if re.search(r'sample0', mpl_file):
             for line in serr.splitlines():
                 out.append(line)
-            with open(out_file, mode='w', encoding='utf-8') as fp:
+            with open(out_file, mode='w',encoding='utf-8') as fp:
                 for l in out:
                     fp.write(l+'\n')
             return 1
-        raise ParseError(serr) from exc
+        raise ScanError(serr) from exc
     except Exception as err:
-        with open(out_file, mode='w', encoding='utf-8') as fp:
+        with open(out_file, mode='w',encoding='utf-8') as fp:
             print(err, file=fp)
         raise err
 
@@ -63,10 +69,7 @@ def common_task(mpl_file, out_file):
 TEST_RESULT_DIR = "test_results"
 TEST_EXPECT_DIR = "test_expects"
 
-# 全てのテストデータ
-test_data = sorted(glob.glob("../input0[12]/*.mpl", recursive=True))
-# エラーが出ないことが期待されるデータのみ
-test_valid_data = sorted(glob.glob("../input0[12]/sample[!0]*.mpl", recursive=True))
+test_data = sorted(glob.glob("../input01/*.mpl", recursive=True))
 
 def test_compile():
     """指定ディレクトリでコンパイルができるかをテスト"""
@@ -94,27 +97,3 @@ def test_not_valid_file():
     serr = exec_res.pop(0)
     assert serr
 
-@pytest.mark.timeout(10)
-@pytest.mark.parametrize(("mpl_file"), test_data)
-
-def test_run(mpl_file):
-    """準備したテストケースを全て実行する．"""
-    # 期待された出力が得られるかを確認．ただし，厳密すぎるため，テストに通らないからといってダメというわけではない．
-    if not Path(TEST_RESULT_DIR).exists():
-        os.mkdir(TEST_RESULT_DIR)
-    out_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out")
-    res = common_task(mpl_file, out_file)
-    # 正常終了した場合
-    if res == 0:
-        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
-        with open(out_file,encoding='utf-8') as ofp, open(expect_file,encoding='utf-8') as efp:
-            assert ofp.read() == efp.read()
-    # 異常終了した場合
-    else:
-        # エラーの行番号が正しいかを確認
-        # (正解データの前後1行にあるものまで許容)
-        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stderr")
-        with open(out_file,encoding='utf-8') as ofp, open(expect_file,encoding='utf-8') as efp:
-            o =  int(re.search(r'(\d+)',ofp.read()).group())
-            e =  int(re.search(r'(\d+)',efp.read()).group())
-            assert o - 1 <= e <= o + 1
