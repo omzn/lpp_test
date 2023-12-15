@@ -1,11 +1,10 @@
 FROM gcc:11.4.0
 RUN apt update
-RUN apt-get install -y ca-certificates curl gnupg
+RUN apt-get install -y ca-certificates curl gnupg gdb python3-pip python3-pytest python3-pytest-timeout tmux vim less cmake
 RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/nodesource.gpg
 RUN echo "deb [signed-by=/etc/apt/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" > /etc/apt/sources.list.d/nodesource.list
 #RUN curl -sL https://deb.nodesource.com/setup_lts.x | bash - 
-RUN apt install -y nodejs npm
-RUN apt install -y gdb python3-pip python3-pytest python3-pytest-timeout tmux vim less cmake
+RUN apt update && apt install -y nodejs
 RUN echo '#!/bin/sh\npython3 -m pytest $1 $2 $3 $4 $5 $6 $7 $8 $9' > /usr/local/bin/pytest && chmod +x /usr/local/bin/pytest
 RUN cd / && git clone https://github.com/omzn/casljs && cd /casljs && npm ci
 RUN cd / && git clone https://github.com/omzn/lpp_test 
