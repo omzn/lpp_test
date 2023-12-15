@@ -84,8 +84,8 @@ def test_run(mpl_file):
         with open(out_file, encoding='utf-8') as ofp, open(expect_file, encoding='utf-8') as efp:
             out_cont = ofp.read().splitlines()
             est_cont = efp.read().splitlines()
-            for i in range(len(out_cont)):
-                assert out_cont[i] == est_cont[i], "Line does not match."
+            for i, out_line in enumerate(out_cont):
+                assert out_line == est_cont[i], "Line does not match."
     else:
         with open(out_file, encoding='utf-8') as ofp:
             assert not ofp.read() == '', "Error message should appear."
