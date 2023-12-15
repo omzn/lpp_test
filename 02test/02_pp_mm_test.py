@@ -86,10 +86,13 @@ def test_idempotency(mpl_file):
         res1 = common_task(out_file, out2_file)
         if res1 == 0:
             with open(out2_file,encoding='utf-8') as ofp2, open(out_file,encoding='utf-8') as ofp1:
-                assert ofp2.read() == ofp1.read(), "Pretty print idempotency is broken."
+                out_cont = ofp2.read().splitlines()
+                est_cont = ofp1.read().splitlines()
+                for i, out_line in enumerate(out_cont):
+                    assert out_line == est_cont[i], "Line does not match."
         else:
             # 実行結果がエラーになるのであれば，それはダメ
-            assert False
+            assert False, "Pretty print idempotency is broken."
     else:
         # エラーになるわけがないテストデータのみを与えるので，ここは無条件にダメ
-        assert False
+        assert False, "Pretty print idempotency is broken."

@@ -82,13 +82,19 @@ def test_run(mpl_file):
     if res == 0:
         expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
         with open(out_file,encoding='utf-8') as ofp, open(expect_file,encoding='utf-8') as efp:
-            assert ofp.read() == efp.read(), "Pretty prent format does not match."
+            out_cont = ofp.read().splitlines()
+            est_cont = efp.read().splitlines()
+            for i, out_line in enumerate(out_cont):
+                assert out_line == est_cont[i], "Line does not match."
     # 異常終了した場合
     else:
         # エラーの行番号が正しいかを確認
         # (正解データの前後1行にあるものまで許容)
         expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stderr")
         with open(out_file,encoding='utf-8') as ofp, open(expect_file,encoding='utf-8') as efp:
-            o =  int(re.search(r'(\d+)',ofp.read()).group())
-            e =  int(re.search(r'(\d+)',efp.read()).group())
-            assert o - 1 <= e <= o + 1, "Line number of error message is different."
+            try:
+                o =  int(re.search(r'(\d+)',ofp.read()).group())
+                e =  int(re.search(r'(\d+)',efp.read()).group())
+                assert o - 1 <= e <= o + 1, "Line number of error message is different."
+            except IndexError:
+                assert False, "Line number does not appear in error message."

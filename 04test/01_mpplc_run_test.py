@@ -77,10 +77,13 @@ def test_mpplc_run(mpl_file):
     res = common_task(mpl_file, out_file)
     if res == 0:
         casl2file = Path(__file__).parent / Path(CASL2_FILE_DIR) / Path(Path(mpl_file).stem + ".csl")
-        assert os.path.getsize(casl2file) > 0
+        assert os.path.getsize(casl2file) > 0, "No CASL code generated."
     else:
         expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).name + ".stderr")
         with open(out_file,encoding='utf-8') as ofp, open(expect_file,encoding='utf-8') as efp:
-            o =  int(re.search(r'(\d+)',ofp.read()).group())
-            e =  int(re.search(r'(\d+)',efp.read()).group())
-            assert o - 1 <= e <= o + 1
+            try:
+                o =  int(re.search(r'(\d+)',ofp.read()).group())
+                e =  int(re.search(r'(\d+)',efp.read()).group())
+                assert o - 1 <= e <= o + 1, "Line number of error message is different."
+            except IndexError:
+                assert False, "Line number does not appear in error message."

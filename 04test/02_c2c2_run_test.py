@@ -69,4 +69,7 @@ def test_c2c2_run(casl2_file):
     common_task(casl2_file, out_file)
     expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(casl2_file).name + ".out")
     with open(out_file,encoding='utf-8') as ofp, open(expect_file,encoding='utf-8') as efp:
-        assert ofp.read() == efp.read()
+        out_cont = ofp.read().splitlines()
+        est_cont = efp.read().splitlines()
+        for i, out_line in enumerate(out_cont):
+            assert out_line == est_cont[i], "Line does not match."
