@@ -86,7 +86,7 @@ def test_idempotency(mpl_file):
         res1 = common_task(out_file, out2_file)
         if res1 == 0:
             with open(out2_file,encoding='utf-8') as ofp2, open(out_file,encoding='utf-8') as ofp1:
-                assert ofp2.read() == ofp1.read()
+                assert ofp2.read() == ofp1.read(), "Pretty print idempotency is broken."
         else:
             # 実行結果がエラーになるのであれば，それはダメ
             assert False

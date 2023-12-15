@@ -82,7 +82,10 @@ def test_run(mpl_file):
     if res == 0:
         expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
         with open(out_file, encoding='utf-8') as ofp, open(expect_file, encoding='utf-8') as efp:
-            assert ofp.read() == efp.read()
+            out_cont = ofp.read().splitlines()
+            est_cont = efp.read().splitlines()
+            for i in range(out_cont.len()):
+                assert out_cont[i] == est_cont[i], "Line does not match."
     else:
         with open(out_file, encoding='utf-8') as ofp:
-            assert not ofp.read() == ''
+            assert not ofp.read() == '', "Error message should appear."

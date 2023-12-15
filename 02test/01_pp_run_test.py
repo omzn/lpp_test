@@ -82,7 +82,7 @@ def test_run(mpl_file):
     if res == 0:
         expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
         with open(out_file,encoding='utf-8') as ofp, open(expect_file,encoding='utf-8') as efp:
-            assert ofp.read() == efp.read()
+            assert ofp.read() == efp.read(), "Pretty prent format does not match."
     # 異常終了した場合
     else:
         # エラーの行番号が正しいかを確認
@@ -91,4 +91,4 @@ def test_run(mpl_file):
         with open(out_file,encoding='utf-8') as ofp, open(expect_file,encoding='utf-8') as efp:
             o =  int(re.search(r'(\d+)',ofp.read()).group())
             e =  int(re.search(r'(\d+)',efp.read()).group())
-            assert o - 1 <= e <= o + 1
+            assert o - 1 <= e <= o + 1, "Line number of error message is different."

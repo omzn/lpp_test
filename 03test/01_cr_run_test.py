@@ -37,7 +37,7 @@ def common_task(mpl_file, out_file):
         for line in sout.splitlines():
             out.append(re.sub(r'\s',r'',line))
         if out:
-            out.pop(0)
+            out.pop(0) # 1行目を捨てる
             out.sort()
             with open(out_file, mode='w',encoding='utf-8') as fp:
                 for l in out:
@@ -78,10 +78,10 @@ def test_cr_run(mpl_file):
     if res == 0:
         expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
         with open(out_file, encoding='utf-8') as ofp, open(expect_file, encoding='utf-8') as efp:
-            assert ofp.read() == efp.read()
+            assert ofp.read() == efp.read(), "Contents of cross reference table is different."
     else:
         expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stderr")
         with open(out_file, encoding='utf-8') as ofp, open(expect_file, encoding='utf-8') as efp:
             o =  int(re.search(r'(\d+)',ofp.read()).group())
             e =  int(re.search(r'(\d+)',efp.read()).group())
-            assert o - 1 <= e <= o + 1
+            assert o - 1 <= e <= o + 1, "Line number of error message is different."

@@ -75,7 +75,7 @@ def test_compile():
     os.chdir(cwd)
     exec_res.pop(0)
     serr = exec_res.pop(0)
-    assert not serr
+    assert not serr, "Cannot compile progrsm."
 
 def test_no_param():
     """引数を付けずに実行するテスト"""
@@ -83,7 +83,7 @@ def test_no_param():
     exec_res = command(f"{exe}")
     exec_res.pop(0)
     serr = exec_res.pop(0)
-    assert serr
+    assert serr, "Cannot handle no parameter."
 
 def test_not_valid_file():
     """存在しないファイルを引数にした場合のテスト"""
@@ -91,4 +91,4 @@ def test_not_valid_file():
     exec_res = command(f"{exe} hogehoge")
     exec_res.pop(0)
     serr = exec_res.pop(0)
-    assert serr
+    assert serr, "Cannot handle non existent file."
