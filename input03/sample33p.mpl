@@ -24,10 +24,11 @@ begin
 	call p(b);
 	call q(a)
 end.
-
-; xを入力 → 
+{
+	; xを入力 → 
 ; x = 1 -> b := 'a'
 ; x = 2 -> b := 'c'
 ; それ以外 -> b := 'b'
 ; q = 1 -> a = true
+}
   
