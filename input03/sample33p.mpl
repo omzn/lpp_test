@@ -25,10 +25,10 @@ begin
 	call q(a)
 end.
 {
-	; xを入力 → 
-; x = 1 -> b := 'a'
-; x = 2 -> b := 'c'
-; それ以外 -> b := 'b'
-; q = 1 -> a = true
+input x ->
+x = 1 -> b := 'a'
+x = 2 -> b := 'c'
+other -> b := 'b'
+q = 1 -> a = true
 }
   
