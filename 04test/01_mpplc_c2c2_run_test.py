@@ -47,6 +47,10 @@ def compile_task(mpl_file, out_file):
         exe = Path(TARGETPATH) / Path(TARGET)
         exec_res = command(f"{exe} {mpl_file}")
         cslfile = Path(mpl_file).stem + ".csl"
+        if not Path(cslfile).exists():
+            cslfile = Path(mpl_file).with_suffix(".csl")
+            if not Path(cslfile).exists():
+                raise CompileError("CSL file not found.")
         out = []
         exec_res.pop(0)
         serr = exec_res.pop(0)
