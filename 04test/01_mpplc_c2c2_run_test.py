@@ -56,7 +56,7 @@ def compile_task(mpl_file, out_file):
         serr = exec_res.pop(0)
         if serr:
             raise CompileError(serr)
-        casl2file = Path(__file__).parent / Path(CASL2_FILE_DIR) / Path(cslfile)
+        casl2file = Path(__file__).parent / Path(CASL2_FILE_DIR) / Path(cslfile).name
         os.rename(cslfile, casl2file)
         return 0
     except CompileError as exc:
