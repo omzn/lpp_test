@@ -32,9 +32,9 @@ def common_task(mpl_file, out_file):
         exec_res = command(f"{exe} {mpl_file}")
         cslfile = Path(Path(mpl_file).stem + ".csl")
         if not cslfile.exists():
-            cslfile = Path(Path(TARGETPATH) / Path(mpl_file).name.stem + ".csl")
+            cslfile = Path(mpl_file).parent / Path(Path(mpl_file).stem + ".csl")
             if not cslfile.exists():
-                raise CompileError("CSL file not found.")
+                raise CompileError(".csl file not found.")
         out = []
         exec_res.pop(0)
         serr = exec_res.pop(0)
