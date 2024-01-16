@@ -17,6 +17,9 @@ class CompileError(Exception):
 class Casl2AssembleError(Exception):
     """アセンブルエラーハンドラ"""
 
+class Comet2ExecutionError(Exception):
+    """エミュレータ実行エラーハンドラ"""
+
 def command(cmd):
     """コマンドの実行"""
     try:
@@ -24,9 +27,9 @@ def command(cmd):
                 stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                 universal_newlines=True)
         return [result.stdout,result.stderr]
-    except subprocess.CalledProcessError:
-        print(f"外部プログラムの実行に失敗しました [{cmd}]", file=sys.stderr)
-        sys.exit(1)
+    except subprocess.CalledProcessError as exc:
+#        print(f"外部プログラムの実行に失敗しました [{cmd}]", file=sys.stderr)
+        raise Comet2ExecutionError("Failed to execute COMET II") from exc
 
 def interactive_command(cmd):
     """対話コマンド実行"""
@@ -36,9 +39,9 @@ def interactive_command(cmd):
                 universal_newlines=True)
         for line in result.stdout.splitlines():
             yield line
-    except subprocess.CalledProcessError:
-        print(f'外部プログラムの実行に失敗しました [{cmd}]', file=sys.stderr)
-        sys.exit(1)
+    except subprocess.CalledProcessError as exc:
+#        print(f'外部プログラムの実行に失敗しました [{cmd}]', file=sys.stderr)
+        raise Comet2ExecutionError("Failed to interactively execute COMET II") from exc
 
 def compile_task(mpl_file, out_file):
     """コンパイルタスク"""
