@@ -53,7 +53,7 @@ def compile_task(mpl_file, out_file):
         if not Path(cslfile).exists():
             cslfile = Path(mpl_file).with_suffix(".csl")
             if not Path(cslfile).exists():
-                raise CompileError("CSL file not found.")
+                raise CompileError("CSL file not found")
         out = []
         exec_res.pop(0)
         serr = exec_res.pop(0)
@@ -72,7 +72,7 @@ def compile_task(mpl_file, out_file):
                     fp.write(l+'\n')
             os.remove(cslfile)
             return 1
-        raise CompileError(serr) from exc
+        raise exc
     except Exception as err:
         with open(out_file, mode='w',encoding='utf-8') as fp:
             print(err, file=fp)
