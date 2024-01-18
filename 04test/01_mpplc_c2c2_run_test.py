@@ -1,6 +1,5 @@
 """課題4用コンパイル・実行テスト"""
 import os
-import sys
 import re
 import json
 from pathlib import Path
