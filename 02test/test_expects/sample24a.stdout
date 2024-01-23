@@ -1,0 +1,8 @@
+program sample24a;
+    var
+        a : integer;
+begin
+    a := 1;
+    writeln ( a );
+    writeln ( '''' : 3 )
+end.
