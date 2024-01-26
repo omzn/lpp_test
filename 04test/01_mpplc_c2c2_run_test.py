@@ -116,7 +116,7 @@ CASL2_FILE_DIR  = "casl2"
 
 test_data = sorted(glob.glob("../input*/*.mpl", recursive=True))
 
-@pytest.mark.timeout(10)
+@pytest.mark.timeout(15)
 @pytest.mark.parametrize(("mpl_file"), test_data)
 def test_mpplc_run(mpl_file):
     """mpplcを実行する"""

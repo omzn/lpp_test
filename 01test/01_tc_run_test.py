@@ -38,8 +38,12 @@ def common_task(mpl_file, out_file):
         if serr:
             raise ScanError(serr)
         for line in sout.splitlines():
-            if re.search(r'Identifier',line, re.I):
+            if re.search(r'Identifier',line):
                 continue
+#            if re.search(r'StringLiteral',line):
+#                continue
+#            if re.search(r'NumberLiteral',line):
+#                continue
             if re.search(r'\s*"\s*\S*\s*"\s*\d+\s*',line):
                 formatted = re.sub(r'\s*"\s*(\S*)\s*"\s*(\d+)\s*', r'"\1"\t\2\n', line)
                 out.append(formatted)
