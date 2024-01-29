@@ -6,6 +6,8 @@ import sys
 import re
 from pathlib import Path
 import pytest
+import itertools
+
 
 TARGET = "pp"
 TARGETPATH = "/workspaces"
@@ -84,8 +86,10 @@ def test_run(mpl_file):
         with open(out_file,encoding='utf-8') as ofp, open(expect_file,encoding='utf-8') as efp:
             out_cont = ofp.read().splitlines()
             est_cont = efp.read().splitlines()
-            for i, out_line in enumerate(out_cont):
-                assert out_line == est_cont[i], "Line does not match."
+            for out_line, est_line in itertools.zip_longest(out_cont, est_cont, fillvalue=""):
+                assert out_line == est_line, "Line does not match."
+
+
     # 異常終了した場合
     else:
         # エラーの行番号が正しいかを確認
