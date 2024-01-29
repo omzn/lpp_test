@@ -6,6 +6,8 @@ from pathlib import Path
 import glob
 import subprocess
 import pytest
+import itertools
+
 
 TARGET = "mpplc"
 TARGETPATH = "/workspaces"
@@ -135,8 +137,8 @@ def test_mpplc_run(mpl_file):
         with open(out_file,encoding='utf-8') as ofp, open(expect_file,encoding='utf-8') as efp:
             out_cont = ofp.read().splitlines()
             est_cont = efp.read().splitlines()
-            for i, out_line in enumerate(out_cont):
-                assert out_line == est_cont[i], "Line does not match."
+            for out_line, est_line in itertools.zip_longest(out_cont, est_cont, fillvalue=""):
+                assert out_line == est_line, "Line does not match."
     else:
         expect_file = Path(TEST_EXPECT_DIR)/Path(Path(mpl_file).name + ".stderr")
         with open(out_file,encoding='utf-8') as ofp, open(expect_file,encoding='utf-8') as efp:
