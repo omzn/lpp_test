@@ -5,8 +5,8 @@ import re
 from pathlib import Path
 import glob
 import subprocess
-import pytest
 import itertools
+import pytest
 
 
 TARGET = "tc"

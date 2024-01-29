@@ -5,8 +5,8 @@ import subprocess
 import sys
 import re
 from pathlib import Path
-import pytest
 import itertools
+import pytest
 
 
 TARGET = "pp"
