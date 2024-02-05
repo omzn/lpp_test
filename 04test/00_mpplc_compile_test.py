@@ -5,6 +5,7 @@ import re
 from pathlib import Path
 import glob
 import subprocess
+import shutil
 #import pytest
 
 TARGET = "mpplc"
@@ -80,7 +81,7 @@ def test_compile():
     os.chdir(cwd)
     exec_res.pop(0)
     serr = exec_res.pop(0)
-    assert not serr, "Compilation failed."
+    assert not serr, "mpplcのコンパイルに失敗しました"
 
 def test_no_param():
     """引数を付けずに実行するテスト"""
@@ -88,7 +89,7 @@ def test_no_param():
     exec_res = command(f"{exe}")
     exec_res.pop(0)
     serr = exec_res.pop(0)
-    assert serr, "No error message when no parameter is given."
+    assert serr, "パラーメータを与えない時にエラーがでません"
 
 def test_not_valid_file():
     """存在しないファイルを引数にした場合のテスト"""
@@ -96,4 +97,27 @@ def test_not_valid_file():
     exec_res = command(f"{exe} hogehoge")
     exec_res.pop(0)
     serr = exec_res.pop(0)
-    assert serr, "No error message when non existent file is given."
+    assert serr, "存在しないファイル名を与えた時にエラーがでません"
+
+def test_absolute_path_file():
+    """絶対パスでファイルを指定した場合のテスト"""
+    shutil.copy('../input01/sample12.mpl','/tmp/sample12.mpl')
+    exe = Path(TARGETPATH) / Path(TARGET)
+    command(f"{exe} /tmp/sample12.mpl")
+    if os.path.isfile("./sample12.csl"):
+        assert True
+    elif os.path.isfile("/tmp/sample12.csl"):
+        assert True
+    else:
+        assert False, "絶対パスでのファイル名指定ができていません"
+
+def test_relative_path_file():
+    """相対パスでファイルを指定した場合のテスト"""
+    exe = Path(TARGETPATH) / Path(TARGET)
+    command(f"{exe} ../input01/sample12.mpl")
+    if os.path.isfile("./sample12.csl"):
+        assert True
+    elif os.path.isfile("../input01/sample12.csl"):
+        assert True
+    else:
+        assert False, "相対パスでのファイル名指定ができていません"
