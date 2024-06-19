@@ -3,7 +3,7 @@ FROM node:20-bookworm-slim AS build_env
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    imagemagick \
+    imagemagick wget ca-certificates \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -17,6 +17,11 @@ COPY casljs/ ./
 WORKDIR /motd
 COPY docker/mk_motd.sh docker/aqua.png ./
 RUN bash mk_motd.sh aqua.png
+
+# Starship
+WORKDIR /starship
+RUN wget https://github.com/starship/starship/releases/download/v1.19.0/starship-x86_64-unknown-linux-gnu.tar.gz \
+    && tar xvf starship-x86_64-unknown-linux-gnu.tar.gz
 
 # 演習室は Ubuntu 22.04 なので
 FROM ubuntu:22.04 AS user_env
@@ -43,10 +48,12 @@ WORKDIR /lpp_test
 
 # Copy shell related files
 COPY --from=build_env /etc/motd /etc/motd
+COPY --from=build_env /starship/starship /usr/local/bin/starship
 COPY ./docker/pytest /usr/local/bin/pytest
 COPY ./docker/bashrc /root/.bashrc
 COPY ./docker/issue /etc/issue
 COPY ./docker/lpptest /usr/local/bin/lpptest
+COPY ./docker/starship.toml /root/.config/starship.toml
 
 COPY --from=build_env /casljs /casljs
 

@@ -1,6 +1,4 @@
-arch=`uname -m`
-PS1='\e[1;36m\w\e[0m\n${arch}# '
-umask 022
+eval "$(starship init bash)"
 export LS_OPTIONS='--color=auto'
 alias c2c2='node /casljs/c2c2.js'
 alias ls='ls $LS_OPTIONS'
