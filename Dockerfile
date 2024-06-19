@@ -18,15 +18,15 @@ WORKDIR /motd
 COPY docker/mk_motd.sh docker/aqua.png ./
 RUN bash mk_motd.sh aqua.png
 
-# based on gcc 11.4.0 (same as that in exercise room in 2023)
-FROM gcc:11.4.0-bullseye AS user_env
+# 演習室は Ubuntu 22.04 なので
+FROM ubuntu:22.04 AS user_env
 # install essential packages
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     ca-certificates curl gnupg gdb \
     python3-pip python3-pytest \
     python3-pytest-timeout tmux \
-    vim less cmake \
+    vim less cmake g++ \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -36,7 +36,8 @@ RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg -
     && apt-get update \
     && apt-get install -y --no-install-recommends nodejs \
     && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -rf /usr/lib/node_modules/npm/ /usr/bin/npm
 
 WORKDIR /lpp_test
 
