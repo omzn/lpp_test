@@ -1,0 +1,3 @@
+[submodule "casljs"]
+	path = casljs
+	url = https://github.com/omzn/casljs
