@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "lpp-collector"
+version = "0.1.0"
+description = ""
+authors = ["f0reachARR <f0reach@f0reach.me>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+pytest = "^6.2.5"
+requests = "^2.32.3"
+
+[tool.poetry.plugins.pytest11]
+lpp_collector = "pytest_lpp_collector"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
