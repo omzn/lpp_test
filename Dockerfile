@@ -23,6 +23,22 @@ WORKDIR /starship
 RUN wget https://github.com/starship/starship/releases/download/v1.19.0/starship-x86_64-unknown-linux-gnu.tar.gz \
     && tar xvf starship-x86_64-unknown-linux-gnu.tar.gz
 
+################################################################################
+FROM python:3.10-slim AS collector
+WORKDIR /app
+ARG LPP_PYTHON_BASE=./scripts/lpp_collector
+
+RUN pip install poetry \
+    && poetry config virtualenvs.create false
+
+COPY ${LPP_PYTHON_BASE}/pyproject.toml ${LPP_PYTHON_BASE}/poetry.lock* ./
+RUN poetry install
+
+COPY ${LPP_PYTHON_BASE}/ ./
+
+RUN poetry build -f wheel
+
+################################################################################
 # 演習室は Ubuntu 22.04 なので
 FROM ubuntu:22.04 AS user_env
 # install essential packages
@@ -31,7 +47,7 @@ RUN apt-get update \
     ca-certificates curl gnupg gdb \
     python3-pip python3-pytest \
     python3-pytest-timeout tmux \
-    vim less cmake g++ \
+    vim less cmake g++ bash-completion \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -54,6 +70,7 @@ COPY ./docker/bashrc /root/.bashrc
 COPY ./docker/issue /etc/issue
 COPY ./docker/lpptest /usr/local/bin/lpptest
 COPY ./docker/starship.toml /root/.config/starship.toml
+COPY ./docker/lpptest_completion /etc/bash_completion.d/lpptest_completion
 
 COPY --from=build_env /casljs /casljs
 
@@ -61,3 +78,10 @@ COPY --from=build_env /casljs /casljs
 COPY ./testcases/ ./
 
 RUN echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/motd && cat /etc/issue ' >> /etc/bash.bashrc
+
+COPY --from=collector /app/dist/*.whl /tmp/
+
+RUN pip install /tmp/*.whl
+
+VOLUME [ "/workspaces" ]
+WORKDIR /workspaces

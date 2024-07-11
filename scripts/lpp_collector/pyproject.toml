@@ -11,7 +11,7 @@ pytest = "^6.2.5"
 requests = "^2.32.3"
 
 [tool.poetry.plugins.pytest11]
-lpp_collector = "pytest_lpp_collector"
+lpp_collector = "lpp_collector"
 
 [build-system]
 requires = ["poetry-core"]
