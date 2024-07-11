@@ -1,4 +1,5 @@
 """課題2用メタモーフィックテスト"""
+
 # 課題2では，1回実行した出力を再度入力として実行させても
 # 全く同一の出力が得られるべき
 import os
@@ -14,21 +15,29 @@ import pytest
 TARGET = "pp"
 TARGETPATH = "/workspaces"
 
+
 class ParseError(Exception):
     """構文エラーハンドラ"""
+
 
 def command(cmd):
     """コマンドの実行"""
     try:
-        result = subprocess.run(cmd, shell=True, check=False,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                universal_newlines=True)
-#        for line in result.stdout.splitlines():
-#            yield line
-        return [result.stdout,result.stderr]
+        result = subprocess.run(
+            cmd,
+            shell=True,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True,
+        )
+        #        for line in result.stdout.splitlines():
+        #            yield line
+        return [result.stdout, result.stderr]
     except subprocess.CalledProcessError:
         print(f"外部プログラムの実行に失敗しました [{cmd}]", file=sys.stderr)
         sys.exit(1)
+
 
 def common_task(mpl_file, out_file):
     """共通して実行するタスク"""
@@ -42,23 +51,24 @@ def common_task(mpl_file, out_file):
             raise ParseError(serr)
         for line in sout.splitlines():
             out.append(line)
-        with open(out_file, mode='w', encoding='utf-8') as fp:
+        with open(out_file, mode="w", encoding="utf-8") as fp:
             for l in out:
-                fp.write(l+'\n')
+                fp.write(l + "\n")
         return 0
     except ParseError as exc:
-        if re.search(r'sample0', mpl_file):
+        if re.search(r"sample0", mpl_file):
             for line in serr.splitlines():
                 out.append(line)
-            with open(out_file, mode='w', encoding='utf-8') as fp:
+            with open(out_file, mode="w", encoding="utf-8") as fp:
                 for l in out:
-                    fp.write(l+'\n')
+                    fp.write(l + "\n")
             return 1
         raise ParseError(serr) from exc
     except Exception as err:
-        with open(out_file, mode='w', encoding='utf-8') as fp:
+        with open(out_file, mode="w", encoding="utf-8") as fp:
             print(err, file=fp)
         raise err
+
 
 # ===================================
 # pytest code
@@ -72,6 +82,7 @@ test_data = sorted(glob.glob("../input0[12]/*.mpl", recursive=True))
 # エラーが出ないことが期待されるデータのみ
 test_valid_data = sorted(glob.glob("../input0[12]/sample[!0]*.mpl", recursive=True))
 
+
 @pytest.mark.timeout(10)
 @pytest.mark.parametrize(("mpl_file"), test_valid_data)
 def test_idempotency(mpl_file):
@@ -84,13 +95,17 @@ def test_idempotency(mpl_file):
     res = common_task(mpl_file, out_file)
     if res == 0:
         out2_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out2")
-       # 2回目の実行
+        # 2回目の実行
         res1 = common_task(out_file, out2_file)
         if res1 == 0:
-            with open(out2_file,encoding='utf-8') as ofp2, open(out_file,encoding='utf-8') as ofp1:
+            with open(out2_file, encoding="utf-8") as ofp2, open(
+                out_file, encoding="utf-8"
+            ) as ofp1:
                 out_cont = ofp2.read().splitlines()
                 est_cont = ofp1.read().splitlines()
-            for out_line, est_line in itertools.zip_longest(out_cont, est_cont, fillvalue=""):
+            for out_line, est_line in itertools.zip_longest(
+                out_cont, est_cont, fillvalue=""
+            ):
                 assert out_line == est_line, "Line does not match."
         else:
             # 実行結果がエラーになるのであれば，それはダメ

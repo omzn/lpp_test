@@ -1,4 +1,5 @@
 """課題4用コンパイル・実行テスト"""
+
 import os
 import re
 import json
@@ -12,42 +13,58 @@ import pytest
 TARGET = "mpplc"
 TARGETPATH = "/workspaces"
 
+
 class CompileError(Exception):
     """コンパイルエラーハンドラ"""
+
 
 class Casl2AssembleError(Exception):
     """アセンブルエラーハンドラ"""
 
+
 class Comet2ExecutionError(Exception):
     """エミュレータ実行エラーハンドラ"""
+
 
 def command(cmd):
     """コマンドの実行"""
     try:
-        result = subprocess.run(cmd, shell=True, check=False,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                universal_newlines=True)
-        return [result.stdout,result.stderr]
+        result = subprocess.run(
+            cmd,
+            shell=True,
+            check=False,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True,
+        )
+        return [result.stdout, result.stderr]
     except subprocess.CalledProcessError as exc:
-#        print(f"外部プログラムの実行に失敗しました [{cmd}]", file=sys.stderr)
+        #        print(f"外部プログラムの実行に失敗しました [{cmd}]", file=sys.stderr)
         raise Comet2ExecutionError("Failed to execute COMET II") from exc
+
 
 def interactive_command(cmd):
     """対話コマンド実行"""
     try:
-        result = subprocess.run(cmd, shell=True, check=True,
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                universal_newlines=True)
+        result = subprocess.run(
+            cmd,
+            shell=True,
+            check=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            universal_newlines=True,
+        )
         for line in result.stdout.splitlines():
             yield line
     except subprocess.CalledProcessError as exc:
-#        print(f'外部プログラムの実行に失敗しました [{cmd}]', file=sys.stderr)
+        #        print(f'外部プログラムの実行に失敗しました [{cmd}]', file=sys.stderr)
         raise Comet2ExecutionError("Failed to interactively execute COMET II") from exc
+
 
 def compile_task(mpl_file, out_file):
     """コンパイルタスク"""
     try:
-        #mpplc = Path(__file__).parent.parent.joinpath("mpplc")
+        # mpplc = Path(__file__).parent.parent.joinpath("mpplc")
         exe = Path(TARGETPATH) / Path(TARGET)
         exec_res = command(f"{exe} {mpl_file}")
         cslfile = Path(mpl_file).stem + ".csl"
@@ -65,48 +82,52 @@ def compile_task(mpl_file, out_file):
         os.rename(cslfile, casl2file)
         return 0
     except CompileError as exc:
-        if re.search(r'sample0', mpl_file):
+        if re.search(r"sample0", mpl_file):
             out = []
             for line in serr.splitlines():
                 out.append(line)
-            with open(out_file, mode='w',encoding='utf-8') as fp:
+            with open(out_file, mode="w", encoding="utf-8") as fp:
                 for l in out:
-                    fp.write(l+'\n')
+                    fp.write(l + "\n")
             os.remove(cslfile)
             return 1
         raise exc
     except Exception as err:
-        with open(out_file, mode='w',encoding='utf-8') as fp:
+        with open(out_file, mode="w", encoding="utf-8") as fp:
             print(err, file=fp)
         raise err
+
 
 def execution_task(casl2_file, out_file):
     """c2c2実行タスク"""
     try:
-#        c2c2 = Path(__file__).parent.parent.joinpath("c2c2.js")
+        #        c2c2 = Path(__file__).parent.parent.joinpath("c2c2.js")
         c2c2 = Path("/casljs") / Path("c2c2.js")
         assembler_text = interactive_command(f"node {c2c2} -n -c -a {casl2_file}")
         if "DEFINED SYMBOLS" not in assembler_text:
             raise Casl2AssembleError("Failed to compile")
-        with open("input.json",encoding='utf-8') as fp:
+        with open("input.json", encoding="utf-8") as fp:
             inp = json.load(fp)
-        inputparams = ''
+        inputparams = ""
         if Path(casl2_file).name in inp.keys():
-            inputparams = ' '.join(list(inp[Path(casl2_file).name]))
-        terminal_text = interactive_command(f"node {c2c2} -n -q -r {casl2_file} {inputparams}")
-        with open(out_file, mode='w',encoding='utf-8') as fp:
+            inputparams = " ".join(list(inp[Path(casl2_file).name]))
+        terminal_text = interactive_command(
+            f"node {c2c2} -n -q -r {casl2_file} {inputparams}"
+        )
+        with open(out_file, mode="w", encoding="utf-8") as fp:
             for line in terminal_text:
-                fp.write(line + '\n')
+                fp.write(line + "\n")
     except Casl2AssembleError as exc:
-        with open(out_file, mode='w',encoding='utf-8') as fp:
+        with open(out_file, mode="w", encoding="utf-8") as fp:
             fp.write("============ASSEMBLE ERROR==============\n")
             for line in assembler_text:
-                fp.write(line + '\n')
+                fp.write(line + "\n")
         raise Casl2AssembleError("Assemble Error") from exc
     except Exception as err:
-        with open(out_file, mode='w',encoding='utf-8') as fp:
+        with open(out_file, mode="w", encoding="utf-8") as fp:
             print(err, file=fp)
         raise err
+
 
 # ===================================
 # pytest code
@@ -114,9 +135,10 @@ def execution_task(casl2_file, out_file):
 
 TEST_RESULT_DIR = "test_results"
 TEST_EXPECT_DIR = "test_expects"
-CASL2_FILE_DIR  = "casl2"
+CASL2_FILE_DIR = "casl2"
 
 test_data = sorted(glob.glob("/lpp_test/input*/*.mpl", recursive=True))
+
 
 @pytest.mark.timeout(15)
 @pytest.mark.parametrize(("mpl_file"), test_data)
@@ -129,22 +151,32 @@ def test_mpplc_run(mpl_file):
     out_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).name + ".out")
     res = compile_task(mpl_file, out_file)
     if res == 0:
-        casl2file = Path(__file__).parent/Path(CASL2_FILE_DIR)/Path(Path(mpl_file).stem + ".csl")
+        casl2file = (
+            Path(__file__).parent
+            / Path(CASL2_FILE_DIR)
+            / Path(Path(mpl_file).stem + ".csl")
+        )
         assert os.path.getsize(casl2file) > 0, "No CASL code generated."
-        out_file = Path(TEST_RESULT_DIR)/Path(Path(casl2file).name + ".out")
+        out_file = Path(TEST_RESULT_DIR) / Path(Path(casl2file).name + ".out")
         execution_task(casl2file, out_file)
-        expect_file = Path(TEST_EXPECT_DIR)/Path(Path(casl2file).name + ".out")
-        with open(out_file,encoding='utf-8') as ofp, open(expect_file,encoding='utf-8') as efp:
+        expect_file = Path(TEST_EXPECT_DIR) / Path(Path(casl2file).name + ".out")
+        with open(out_file, encoding="utf-8") as ofp, open(
+            expect_file, encoding="utf-8"
+        ) as efp:
             out_cont = ofp.read().splitlines()
             est_cont = efp.read().splitlines()
-            for out_line, est_line in itertools.zip_longest(out_cont, est_cont, fillvalue=""):
+            for out_line, est_line in itertools.zip_longest(
+                out_cont, est_cont, fillvalue=""
+            ):
                 assert out_line == est_line, "Line does not match."
     else:
-        expect_file = Path(TEST_EXPECT_DIR)/Path(Path(mpl_file).name + ".stderr")
-        with open(out_file,encoding='utf-8') as ofp, open(expect_file,encoding='utf-8') as efp:
+        expect_file = Path(TEST_EXPECT_DIR) / Path(Path(mpl_file).name + ".stderr")
+        with open(out_file, encoding="utf-8") as ofp, open(
+            expect_file, encoding="utf-8"
+        ) as efp:
             try:
-                o =  int(re.search(r'(\d+)',ofp.read()).group())
-                e =  int(re.search(r'(\d+)',efp.read()).group())
+                o = int(re.search(r"(\d+)", ofp.read()).group())
+                e = int(re.search(r"(\d+)", efp.read()).group())
                 assert o - 1 <= e <= o + 1, "Line number of error message is different."
             except IndexError:
                 assert False, "Line number does not appear in error message."
