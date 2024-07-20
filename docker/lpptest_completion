@@ -1,5 +1,5 @@
 __lpptest_bash_completion() {
     local cur=${COMP_WORDS[COMP_CWORD]}
-    COMPREPLY=($(compgen -W "$(ls /lpp_test)" -- $cur))
+    COMPREPLY=($(compgen -W "$(ls /lpp/test)" -- $cur))
 }
 complete -F __lpptest_bash_completion lpptest

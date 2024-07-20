@@ -60,7 +60,7 @@ RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg -
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /usr/lib/node_modules/npm/ /usr/bin/npm
 
-WORKDIR /lpp_test
+WORKDIR /lpp/test
 
 # Copy shell related files
 COPY --from=build_env /etc/motd /etc/motd
