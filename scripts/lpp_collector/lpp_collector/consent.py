@@ -1,16 +1,17 @@
 # Consent state management
 
 import os
-from .config import LPP_DATA_DIR, LPP_CONSENT_TEXT
-from json import load
+from .config import LPP_AFTER_CONSENT_TEXT, LPP_BASE_URL, LPP_DATA_DIR, LPP_CONSENT_TEXT
+from json import load, dump
 import typing
 from whiptail import Whiptail
+from .sel_client import Client
+from .sel_client.api.default import post_api_device
 
 LPP_CONSENT_FILE = os.path.join(LPP_DATA_DIR, "consent.json")
 
 
 class ConsentData(typing.TypedDict):
-    personal_id: str
     device_id: str
 
 
@@ -34,7 +35,7 @@ class LppExperimentConsent:
         self._consent = consent
         try:
             with open(LPP_CONSENT_FILE, "w") as f:
-                f.write(consent)
+                dump(consent, f)
         except Exception as e:
             print(f"Failed to save experiment consent (unexpected error): {e}")
 
@@ -44,6 +45,12 @@ class LppExperimentConsent:
 
 
 def main():
+    consent_info = LppExperimentConsent()
+    current_consent = consent_info.get_consent()
+    if current_consent is not None:
+        print("TODO: Implement consent revocation")
+        return
+
     # Ask for consent using whiptail
     whiptail = Whiptail(title="Consent Form for experiment")
     consent = whiptail.run(
@@ -62,4 +69,16 @@ def main():
         # Rejected
         return
 
-    print(f"Consent: {consent}")
+    client = Client(LPP_BASE_URL)
+    try:
+        response = post_api_device.sync(client=client)
+        if response is None:
+            print("同意情報の送信に失敗しました")
+            return
+        url = response.consent_form_url
+        print(LPP_AFTER_CONSENT_TEXT.format(form_url=url))
+
+        consent_info.set_consent({"device_id": response.device_id})
+
+    except Exception as e:
+        print(f"同意情報の送信に失敗しました: {e}")
