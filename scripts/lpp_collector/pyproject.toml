@@ -8,8 +8,10 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 pytest = "^6.2.5"
-requests = "^2.32.3"
 whiptail-dialogs = "^0.4.0"
+httpx = ">=0.20.0,<0.28.0"
+attrs = ">=21.3.0"
+python-dateutil = "^2.8.0"
 
 [tool.poetry.plugins.pytest11]
 lpp_collector = "lpp_collector"

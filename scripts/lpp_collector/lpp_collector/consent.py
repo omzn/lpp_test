@@ -58,4 +58,8 @@ def main():
         ],
     )
 
+    if consent.returncode == 1:
+        # Rejected
+        return
+
     print(f"Consent: {consent}")
