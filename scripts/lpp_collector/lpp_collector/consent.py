@@ -1,12 +1,18 @@
 # Consent state management
 
 import os
-from .config import LPP_AFTER_CONSENT_TEXT, LPP_BASE_URL, LPP_DATA_DIR, LPP_CONSENT_TEXT
+from .config import (
+    LPP_AFTER_CONSENT_TEXT,
+    LPP_BASE_URL,
+    LPP_DATA_DIR,
+    LPP_CONSENT_TEXT,
+    LPP_REVOKE_CONSENT_TEXT,
+)
 from json import load, dump
 import typing
 from whiptail import Whiptail
 from .sel_client import Client
-from .sel_client.api.default import post_api_device
+from .sel_client.api.default import post_api_device, delete_api_device_device_id
 
 LPP_CONSENT_FILE = os.path.join(LPP_DATA_DIR, "consent.json")
 
@@ -47,12 +53,43 @@ class LppExperimentConsent:
 def main():
     consent_info = LppExperimentConsent()
     current_consent = consent_info.get_consent()
+
+    whiptail = Whiptail(title="Consent Form for experiment")
+    client = Client(LPP_BASE_URL)
+
     if current_consent is not None:
-        print("TODO: Implement consent revocation")
+        consent = whiptail.run(
+            "yesno",
+            LPP_REVOKE_CONSENT_TEXT,
+            extra_args=[
+                "--scrolltext",
+                "--yes-button",
+                "同意を取り消す",
+                "--no-button",
+                "キャンセル",
+            ],
+        )
+
+        if consent.returncode == 1:
+            # Cancelled
+            return
+
+        try:
+            response = delete_api_device_device_id.sync_detailed(
+                current_consent["device_id"],
+                client=client,
+            )
+            if response is None:
+                print("同意情報の取り消しに失敗しました")
+                return
+            consent_info.delete_consent()
+            print("同意情報を取り消しました")
+        except Exception as e:
+            print(f"同意情報の取り消しに失敗しました: {e}")
+
         return
 
     # Ask for consent using whiptail
-    whiptail = Whiptail(title="Consent Form for experiment")
     consent = whiptail.run(
         "yesno",
         LPP_CONSENT_TEXT,
@@ -69,7 +106,6 @@ def main():
         # Rejected
         return
 
-    client = Client(LPP_BASE_URL)
     try:
         response = post_api_device.sync(client=client)
         if response is None:
