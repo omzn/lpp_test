@@ -6,11 +6,11 @@ import subprocess
 import sys
 import re
 from pathlib import Path
+from lpp_collector.config import WORKSPACE_PATH as TARGETPATH
 
 # import pytest
 
 TARGET = "pp"
-TARGETPATH = "/workspaces"
 
 
 class ParseError(Exception):

@@ -6,11 +6,11 @@ import re
 from pathlib import Path
 import glob
 import subprocess
+from lpp_collector.config import WORKSPACE_PATH as TARGETPATH
 
 # import pytest
 
 TARGET = "cr"
-TARGETPATH = "/workspaces"
 
 
 class SemanticError(Exception):

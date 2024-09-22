@@ -10,10 +10,10 @@ import re
 from pathlib import Path
 import itertools
 import pytest
+from lpp_collector.config import WORKSPACE_PATH as TARGETPATH
 
 
 TARGET = "pp"
-TARGETPATH = "/workspaces"
 
 
 class ParseError(Exception):

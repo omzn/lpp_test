@@ -7,11 +7,11 @@ from pathlib import Path
 import glob
 import subprocess
 import shutil
+from lpp_collector.config import WORKSPACE_PATH as TARGETPATH
 
 # import pytest
 
 TARGET = "mpplc"
-TARGETPATH = "/workspaces"
 
 
 class CompileError(Exception):

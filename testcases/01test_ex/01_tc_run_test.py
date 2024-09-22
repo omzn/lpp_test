@@ -8,10 +8,10 @@ import glob
 import subprocess
 import itertools
 import pytest
+from lpp_collector.config import WORKSPACE_PATH as TARGETPATH
 
 
 TARGET = "tc"
-TARGETPATH = "/workspaces"
 
 
 class ScanError(Exception):
