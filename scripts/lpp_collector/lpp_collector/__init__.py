@@ -16,12 +16,8 @@ class LppCollector:
         if self.consent.get_consent() is None:
             return
 
-        if report.when == "teardown":
-            print(
-                "LppCollector.pytest_runtest_logreport() called",
-                report.nodeid,
-                report.outcome,
-            )
+        if report.when == "call":
+            self.uploader.add_test_result(report)
 
     def pytest_sessionfinish(self, session, exitstatus):
         if self.consent.get_consent() is None:
