@@ -41,13 +41,11 @@ RUN poetry build -f wheel
 ################################################################################
 # 演習室は Ubuntu 22.04 なので
 FROM ubuntu:22.04 AS user_env
+
 # install essential packages
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    ca-certificates curl gnupg gdb \
-    python3-pip python3-pytest \
-    python3-pytest-timeout tmux \
-    vim less cmake g++ bash-completion whiptail \
+    ca-certificates curl gnupg \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -59,6 +57,15 @@ RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg -
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /usr/lib/node_modules/npm/ /usr/bin/npm
+
+# install essential packages
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    ca-certificates curl gnupg gdb \
+    python3-pip tmux \
+    vim less cmake g++ bash-completion whiptail \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /lpp/test
 
