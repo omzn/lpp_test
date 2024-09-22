@@ -64,7 +64,6 @@ if [ $RET -ne 0 ]; then
     echo "Docker is not installed. Exiting..."
     exit 1
   fi
-  sudo apt-get install ca-certificates curl
   curl -fsSL https://get.docker.com | sh
   sudo usermod -aG docker $USER
   echo "Docker installed, reboot your PC and re-run the script"
