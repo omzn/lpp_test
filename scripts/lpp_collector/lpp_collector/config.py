@@ -1,7 +1,16 @@
 # Configuration
 
-LPP_BASE_URL = "http://localhost:3000"
-LPP_DATA_DIR = "./"
+import os
+
+
+LPP_BASE_URL = (
+    os.environ["LPP_BASE_URL"]
+    if "LPP_BASE_URL" in os.environ
+    else "http://10.0.0.25:3000"
+)
+LPP_DATA_DIR = (
+    os.environ["LPP_DATA_DIR"] if "LPP_DATA_DIR" in os.environ else "/lpp/data"
+)
 
 LPP_CONSENT_TEXT = """
 (この画面は上下キーでスクロールできます)
@@ -34,3 +43,7 @@ LPP_REVOKE_CONSENT_TEXT = """
 
 同意を取り消した場合、今後、情報の収集は行われません。
 """
+
+LPP_SOURCE_FILES = ["*.c", "*.h", "CMakelists.txt", "Makefile"]
+
+WORKSPACE_PATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"

@@ -47,7 +47,7 @@ RUN apt-get update \
     ca-certificates curl gnupg gdb \
     python3-pip python3-pytest \
     python3-pytest-timeout tmux \
-    vim less cmake g++ bash-completion \
+    vim less cmake g++ bash-completion whiptail \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

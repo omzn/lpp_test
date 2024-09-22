@@ -3,3 +3,5 @@
 .DS_Store
 workspaces
 __pycache__
+testcases/*/test_results
+.pytest_cache/

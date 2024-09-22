@@ -65,5 +65,12 @@ if should_check_update; then
     check_update
 fi
 
+# Prepare bash history
+DOCKER_HISTFILE="$CONFIG_DIR/bash_history"
+touch "$DOCKER_HISTFILE"
+
 # Run the container
-docker run -it --rm -v "$PWD:/workspaces" -v "$CONFIG_DIR:/lpp/data" -w /workspaces "$DOCKER_IMAGE" "$@"
+docker run -it --rm -v "$PWD:/workspaces" \
+    -v "$CONFIG_DIR:/lpp/data" \
+    -v "$DOCKER_HISTFILE:/root/.bash_history" \
+    -w /workspaces "$DOCKER_IMAGE" "$@"
