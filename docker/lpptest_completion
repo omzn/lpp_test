@@ -1,5 +1,22 @@
 __lpptest_bash_completion() {
     local cur=${COMP_WORDS[COMP_CWORD]}
-    COMPREPLY=($(compgen -W "$(ls /lpp/test)" -- $cur))
+    if [ $COMP_CWORD -eq 1 ]; then
+        TEST_DIRS="01test 01test_ex 02test 03test 04test coverage"
+        COMPREPLY=($(compgen -W "$TEST_DIRS" -- $cur))
+        return
+    fi
+    if [ $COMP_CWORD -eq 2 ]; then
+        local test_dir=/lpp/test/${COMP_WORDS[1]}
+        if [ ! -d $test_dir ]; then
+            return
+        fi
+        local test_files=$(ls $test_dir/*.py | xargs -n1 basename)
+        COMPREPLY=($(compgen -W "$test_files" -- $cur))
+        return
+    fi
+    if [ $COMP_CWORD -eq 3 ]; then
+        COMPREPLY=($(compgen -W "-vv -v" -- $cur))
+        return
+    fi
 }
 complete -F __lpptest_bash_completion lpptest
