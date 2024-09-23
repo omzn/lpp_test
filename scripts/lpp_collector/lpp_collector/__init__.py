@@ -24,6 +24,7 @@ class LppCollector:
             return
 
         print("LppCollector.pytest_sessionfinish() called")
+        self.uploader.device_id = self.consent.get_consent()["device_id"]
         self.uploader.upload(source_dir=WORKSPACE_PATH, test_dir=".")
 
 
