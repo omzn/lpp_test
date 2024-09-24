@@ -1,3 +1,4 @@
+import os
 from _pytest.config import Config
 from _pytest.reports import TestReport
 
@@ -23,9 +24,15 @@ class LppCollector:
         if self.consent.get_consent() is None:
             return
 
-        print("LppCollector.pytest_sessionfinish() called")
+        if not self.uploader.has_any_test_result():
+            return
+
+        test_type = os.getcwd()
+
         self.uploader.device_id = self.consent.get_consent()["device_id"]
-        self.uploader.upload(source_dir=WORKSPACE_PATH, test_dir=".")
+        self.uploader.upload(
+            source_dir=WORKSPACE_PATH, test_dir=".", test_type=test_type
+        )
 
 
 def pytest_configure(config: Config):  # pragma: no cover

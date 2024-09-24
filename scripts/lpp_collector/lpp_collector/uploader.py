@@ -31,6 +31,9 @@ class Uploader:
             )
         )
 
+    def has_any_test_result(self):
+        return len(self.test_results) > 0
+
     def _compress_tar(self, files: list[str]) -> BytesIO:
         tar = BytesIO()
         with tarfile.open(fileobj=tar, mode="w") as tf:
@@ -38,7 +41,7 @@ class Uploader:
                 tf.add(file)
         return tar
 
-    def upload(self, source_dir: str, test_dir: str):
+    def upload(self, source_dir: str, test_dir: str, test_type: str):
         # Find source code files
         source_files = sum(
             [
@@ -53,9 +56,9 @@ class Uploader:
 
         result = TestResultRequest(
             device_time=datetime.now(),
-            test_type="pytest",
+            test_type=test_type,
             result=self.test_results,
-            testcases=File(payload=source_blob, file_name="source.tar"),
+            testcases=File(payload=BytesIO(), file_name="source.tar"),
             source_code=File(payload=source_blob, file_name="source.tar"),
         )
 
