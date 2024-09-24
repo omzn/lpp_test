@@ -15,17 +15,18 @@ CONFIG_PATH="$CONFIG_DIR/$CONFIG_FILE"
 
 should_check_update() {
     if [ ! -f "$CONFIG_PATH" ]; then
-        return 1
+        return 0
     fi
 
     CONFIG_LAST_MODIFIED=$(stat -c %Y "$CONFIG_PATH")
     NOW=$(date +%s)
 
-    if [ $((NOW - CONFIG_LAST_MODIFIED)) -gt 86400 ]; then
-        return 1
+    DIFF=$((NOW - CONFIG_LAST_MODIFIED))
+    if [ $DIFF -gt 86400 ]; then
+        return 0
     fi
 
-    return 0
+    return 1
 }
 
 debug_build_image() {
@@ -41,9 +42,9 @@ check_update() {
     # If build root is set, build the image
     if [ -z $DOCKER_IMAGE_ROOT ]; then
         pull_image
-    else
-        debug_build_image
     fi
+
+    touch "$CONFIG_PATH"
 }
 
 # Ensure the config directory exists
@@ -73,4 +74,5 @@ touch "$DOCKER_HISTFILE"
 docker run -it --rm -v "$PWD:/workspaces" \
     -v "$CONFIG_DIR:/lpp/data" \
     -v "$DOCKER_HISTFILE:/root/.bash_history" \
+    --env-file "$CONFIG_PATH" \
     -w /workspaces "$DOCKER_IMAGE" "$@"
