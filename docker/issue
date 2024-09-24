@@ -6,13 +6,13 @@
 
 * Build your program               * Test your program
   (place exec on /workspaces)        (after building your program)
-  # cd /workspaces                   # cd /lpp/test/01test  # kadai 1  
-  # gcc *.c -o tc    # kadai 1       # cd /lpp/test/02test  # kadai 2
-  # gcc *.c -o pp    # kadai 2       # cd /lpp/test/03test  # kadai 3
-  # gcc *.c -o cr    # kadai 3       # cd /lpp/test/04test  # kadai 4
-  # gcc *.c -o mpplc # kadai 4       # pytest -v            # test all
-                                     # pytest -vv           # more info
-                                     # pytest -x            # test until 1st error
+  # cd /workspaces                   # lpptest 01test      # kadai 1  
+  # gcc *.c -o tc    # kadai 1       # lpptest 02test      # kadai 2
+  # gcc *.c -o pp    # kadai 2       # lpptest 03test      # kadai 3
+  # gcc *.c -o cr    # kadai 3       # lpptest 04test      # kadai 4
+  # gcc *.c -o mpplc # kadai 4       # lpptest XXtest -v   # test all
+                                     # lpptest XXtest -vv  # more info
+                                     # lpptest XXtest -x   # test until 1st error
 
   (run your program on a sample in kadai04)     
   # ./mpplc /lpp/test/input03/sample35.mpl

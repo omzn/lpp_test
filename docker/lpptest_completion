@@ -11,11 +11,11 @@ __lpptest_bash_completion() {
             return
         fi
         local test_files=$(ls $test_dir/*.py | xargs -n1 basename)
-        COMPREPLY=($(compgen -W "$test_files" -- $cur))
+        COMPREPLY=($(compgen -W "$test_files -vv -v -x" -- $cur))
         return
     fi
     if [ $COMP_CWORD -eq 3 ]; then
-        COMPREPLY=($(compgen -W "-vv -v" -- $cur))
+        COMPREPLY=($(compgen -W "-vv -v -x" -- $cur))
         return
     fi
 }
