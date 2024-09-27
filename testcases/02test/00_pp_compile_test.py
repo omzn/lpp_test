@@ -6,7 +6,8 @@ import subprocess
 import sys
 import re
 from pathlib import Path
-from lpp_collector.config import WORKSPACE_PATH as TARGETPATH
+
+TARGETPATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
 
 # import pytest
 
