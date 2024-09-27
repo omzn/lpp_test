@@ -34,7 +34,12 @@ debug_build_image() {
 }
 
 pull_image() {
+    OLD_IMAGE_ID=$(docker images --filter=reference=${DOCKER_IMAGE} --format "{{.ID}}")
     docker pull "$DOCKER_IMAGE"
+    for ID in $OLD_IMAGE_ID; do
+        echo Cleaning up old image $ID
+        docker rmi $ID
+    done
 }
 
 check_update() {
