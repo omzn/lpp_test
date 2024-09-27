@@ -19,6 +19,7 @@ lpp_collector = "lpp_collector"
 
 [tool.poetry.scripts]
 consent = "lpp_collector.consent:main"
+lpptest = "lpp_collector.runner:main"
 
 [build-system]
 requires = ["poetry-core"]

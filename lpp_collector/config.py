@@ -1,7 +1,7 @@
 # Configuration
 
 import os
-
+import lpp_collector
 
 LPP_BASE_URL = (
     os.environ["LPP_BASE_URL"]
@@ -47,3 +47,5 @@ LPP_REVOKE_CONSENT_TEXT = """
 LPP_SOURCE_FILES = ["*.c", "*.h", "CMakelists.txt", "Makefile"]
 
 WORKSPACE_PATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
+
+TEST_BASE_DIR = os.path.join(os.path.dirname(lpp_collector.__file__), "testcases")
