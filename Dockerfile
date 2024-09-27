@@ -26,7 +26,7 @@ RUN wget https://github.com/starship/starship/releases/download/v1.19.0/starship
 ################################################################################
 FROM python:3.10-slim AS collector
 WORKDIR /app
-ARG LPP_PYTHON_BASE=./scripts/lpp_collector
+ARG LPP_PYTHON_BASE=.
 
 RUN pip install poetry \
     && poetry config virtualenvs.create false
