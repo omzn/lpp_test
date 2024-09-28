@@ -40,7 +40,6 @@ def command(cmd):
         )
         return [result.stdout, result.stderr]
     except subprocess.CalledProcessError as exc:
-        #        print(f"外部プログラムの実行に失敗しました [{cmd}]", file=sys.stderr)
         raise Comet2ExecutionError("Failed to execute COMET II") from exc
 
 
@@ -102,7 +101,6 @@ def compile_task(mpl_file, out_file):
 def execution_task(casl2_file, out_file):
     """c2c2実行タスク"""
     try:
-        #        c2c2 = Path(__file__).parent.parent.joinpath("c2c2.js")
         c2c2 = Path("/casljs") / Path("c2c2.js")
         assembler_text = interactive_command(f"node {c2c2} -n -c -a {casl2_file}")
         if "DEFINED SYMBOLS" not in assembler_text:
