@@ -25,6 +25,10 @@ def run_test_container(args):
         f"{data_dir}/bash_history:/root/.bash_history",
         "-w",
         "/workspaces",
+        "--env",
+        f"TARGET_UID={os.getuid()}",
+        "--env",
+        f"TARGET_GID={os.getgid()}",
         DOCKER_IMAGE,
         "lpptest",
         *args,
@@ -46,3 +50,11 @@ def run_debug_build(base_dir: str):
     ]
 
     pty.spawn(["docker", *build_args])
+
+
+def fix_permission():
+    if "TARGET_UID" not in os.environ or "TARGET_GID" not in os.environ:
+        return
+    target_uid = os.environ.get("TARGET_UID")
+    target_gid = os.environ.get("TARGET_GID")
+    pty.spawn(["chown", "-R", f"{target_uid}:{target_gid}", TARGETPATH])

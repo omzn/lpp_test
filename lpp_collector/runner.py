@@ -10,7 +10,7 @@ import argcomplete, argparse
 import glob
 from pathlib import Path
 import pytest
-from .docker import run_test_container, run_debug_build
+from .docker import fix_permission, run_test_container, run_debug_build
 import os
 import pty
 
@@ -86,3 +86,11 @@ def main():
         if "LPP_DOCKER_BASE" in os.environ:
             run_debug_build(os.environ["LPP_DOCKER_BASE"])
         run_test_container(sys.argv[1:])
+
+    if IS_DOCKER_ENV:
+        # Fix permissions
+        fix_permission()
+
+
+def main_PYTHON_ARGCOMPLETE_OK():
+    main()
