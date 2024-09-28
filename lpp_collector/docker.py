@@ -16,8 +16,8 @@ def run_test_container(args):
     os.makedirs(data_dir, exist_ok=True)
     target_path = str(Path(TARGETPATH).absolute())
 
-    print(f"Data directory: {data_dir}")
-    print(f"Target path: {target_path}")
+    # print(f"Data directory: {data_dir}")
+    # print(f"Target path: {target_path}")
 
     run_args = [
         "run",
@@ -37,7 +37,6 @@ def run_test_container(args):
         "--env",
         f"TARGET_GID={os.getgid()}",
         DOCKER_IMAGE,
-        "lpptest",
         *args,
     ]
 

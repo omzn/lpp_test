@@ -106,7 +106,7 @@ def main():
             run_debug_build(os.environ["LPP_DOCKER_BASE"])
         else:
             update()
-        run_test_container(sys.argv[1:])
+        run_test_container(["lpptest", *sys.argv[1:]])
 
     if IS_DOCKER_ENV:
         # Fix permissions

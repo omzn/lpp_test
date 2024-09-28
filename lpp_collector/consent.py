@@ -1,7 +1,11 @@
 # Consent state management
 
 import os
+import sys
+
+from lpp_collector.docker import fix_permission, run_test_container, update
 from .config import (
+    IS_DOCKER_ENV,
     LPP_AFTER_CONSENT_TEXT,
     LPP_BASE_URL,
     LPP_DATA_DIR,
@@ -50,7 +54,7 @@ class LppExperimentConsent:
         os.remove(LPP_CONSENT_FILE)
 
 
-def main():
+def show_consent():
     consent_info = LppExperimentConsent()
     current_consent = consent_info.get_consent()
 
@@ -118,3 +122,15 @@ def main():
 
     except Exception as e:
         print(f"同意情報の送信に失敗しました: {e}")
+
+
+def main():
+    if IS_DOCKER_ENV:
+        show_consent()
+    else:
+        update()
+        run_test_container(["lppconsent", *sys.argv[1:]])
+
+    if IS_DOCKER_ENV:
+        # Fix permissions
+        fix_permission()
