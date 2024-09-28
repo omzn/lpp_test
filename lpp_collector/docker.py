@@ -67,13 +67,18 @@ def fix_permission():
     pty.spawn(["chown", "-R", f"{target_uid}:{target_gid}", TARGETPATH])
 
 
+def write_update_marker():
+    with open(LPP_UPDATE_MARKER, "w") as f:
+        f.write(str(time.time()))
+
+
 def check_update():
     if not os.path.exists(LPP_UPDATE_MARKER):
+        write_update_marker()
         return True
 
     last_update = os.path.getmtime(LPP_UPDATE_MARKER)
-    with open(LPP_UPDATE_MARKER, "w") as f:
-        f.write(str(time.time()))
+    write_update_marker()
 
     return (time.time() - last_update) > LPP_UPDATE_INTERVAL
 
