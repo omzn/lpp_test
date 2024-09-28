@@ -1,12 +1,17 @@
 # PYTHON_ARGCOMPLETE_OK
 
+import sys
 from typing import List
-from lpp_collector.config import TEST_BASE_DIR
+from lpp_collector.config import (
+    TEST_BASE_DIR,
+    IS_DOCKER_ENV,
+)
 import argcomplete, argparse
 import glob
 from pathlib import Path
 import pytest
-
+from .docker import run_test_container, run_debug_build
+import os
 
 all_testcases = [
     Path(testcase)
@@ -37,18 +42,18 @@ if specified_testsuite in all_testsuite_list:
     full_parser.add_argument(
         "testcases",
         choices=[testcase.name for testcase in all_testcases] + ["all"],
-        help="Specify testcases to run",
-        nargs="*",
+        help="Specify testcase to run",
         default="all",
     )
 else:
     full_parser.add_argument(
         "testcases",
-        help="Specify testcases to run",
+        help="Specify testcase to run",
         choices=["all"],
-        nargs="*",
         default="all",
     )
+
+full_parser.add_argument("pytest_args", nargs=argparse.REMAINDER)
 
 argcomplete.autocomplete(full_parser)
 
@@ -58,7 +63,7 @@ def run_pytest(args):
     testcases = [
         testcase for testcase in all_testcases if testcase.parent.name == testsuite
     ]
-    specified_testcases: List[str] = args.testcases
+    specified_testcases: List[str] = [args.testcases]
 
     if "all" not in specified_testcases:
         testcases = [
@@ -68,10 +73,15 @@ def run_pytest(args):
     # Sort testcases by name
     testcase_paths = sorted([str(testcase) for testcase in testcases])
 
-    pytest.main(["-v", *testcase_paths])
+    pytest.main([*args.pytest_args, *testcase_paths])
 
 
 def main():
     args = full_parser.parse_args()
-    if args.run_pytest:
+    print(args)
+    if args.run_pytest or IS_DOCKER_ENV:
         run_pytest(args)
+    else:
+        if "LPP_DOCKER_BASE" in os.environ:
+            run_debug_build(os.environ["LPP_DOCKER_BASE"])
+        run_test_container(sys.argv[1:])

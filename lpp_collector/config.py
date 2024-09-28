@@ -43,8 +43,6 @@ LPP_REVOKE_CONSENT_TEXT = """
 
 LPP_SOURCE_FILES = ["*.c", "*.h", "CMakelists.txt", "Makefile"]
 
-WORKSPACE_PATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
-
 TEST_BASE_DIR = os.path.join(os.path.dirname(lpp_collector.__file__), "testcases")
 
 # Docker environment
@@ -52,7 +50,7 @@ IS_DOCKER_ENV = os.path.exists("/.dockerenv")
 DOCKER_IMAGE = (
     os.environ["DOCKER_IMAGE"]
     if "DOCKER_IMAGE" in os.environ
-    else "ghcr.io/f0reacharr/lpptest:latest"
+    else "ghcr.io/f0reacharr/lpp_test:latest"
 )
 
 
@@ -63,7 +61,7 @@ def derive_data_dir():
     if IS_DOCKER_ENV:
         return "/lpp/data"
     else:
-        return "~/.config/lpp/data"
+        return os.path.expanduser("~/.config/lpp/data")
 
 
 LPP_DATA_DIR = derive_data_dir()

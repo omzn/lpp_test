@@ -2,7 +2,7 @@ import os
 from _pytest.config import Config
 from _pytest.reports import TestReport
 
-from lpp_collector.config import WORKSPACE_PATH
+from lpp_collector.config import TARGETPATH
 
 from .uploader import Uploader
 from .consent import LppExperimentConsent
@@ -30,9 +30,7 @@ class LppCollector:
         test_type = os.getcwd()
 
         self.uploader.device_id = self.consent.get_consent()["device_id"]
-        self.uploader.upload(
-            source_dir=WORKSPACE_PATH, test_dir=".", test_type=test_type
-        )
+        self.uploader.upload(source_dir=TARGETPATH, test_dir=".", test_type=test_type)
 
 
 def pytest_configure(config: Config):  # pragma: no cover

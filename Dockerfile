@@ -83,9 +83,6 @@ RUN touch /.dockerenv
 
 COPY --from=build_env /casljs /casljs
 
-# Copy testcases
-COPY ./testcases/ ./
-
 RUN echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/motd && cat /etc/issue ' >> /etc/bash.bashrc
 
 COPY --from=collector /app/dist/*.whl /tmp/
