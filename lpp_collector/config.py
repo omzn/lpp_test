@@ -66,6 +66,9 @@ def derive_data_dir():
 
 LPP_DATA_DIR = derive_data_dir()
 
+LPP_UPDATE_MARKER = os.path.join(LPP_DATA_DIR, ".update_marker")
+LPP_UPDATE_INTERVAL = 60 * 60 * 24  # 1 day
+
 
 def derive_target_path():
     if "LPP_TARGET_PATH" in os.environ:

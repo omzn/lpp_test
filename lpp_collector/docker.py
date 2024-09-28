@@ -1,7 +1,14 @@
 import os
 from pathlib import Path
 import pty
-from lpp_collector.config import DOCKER_IMAGE, LPP_DATA_DIR, TARGETPATH
+import time
+from lpp_collector.config import (
+    DOCKER_IMAGE,
+    LPP_DATA_DIR,
+    LPP_UPDATE_INTERVAL,
+    LPP_UPDATE_MARKER,
+    TARGETPATH,
+)
 
 
 def run_test_container(args):
@@ -58,3 +65,23 @@ def fix_permission():
     target_uid = os.environ.get("TARGET_UID")
     target_gid = os.environ.get("TARGET_GID")
     pty.spawn(["chown", "-R", f"{target_uid}:{target_gid}", TARGETPATH])
+
+
+def check_update():
+    if not os.path.exists(LPP_UPDATE_MARKER):
+        return True
+
+    last_update = os.path.getmtime(LPP_UPDATE_MARKER)
+    with open(LPP_UPDATE_MARKER, "w") as f:
+        f.write(str(time.time()))
+
+    return (time.time() - last_update) > LPP_UPDATE_INTERVAL
+
+
+def update():
+    if not check_update():
+        return
+
+    print("Updating LPP test environment...")
+    pty.spawn(["docker", "pull", DOCKER_IMAGE])
+    print("Update complete.")
