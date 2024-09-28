@@ -45,6 +45,7 @@ if specified_testsuite in all_testsuite_list:
         choices=[testcase.name for testcase in all_testcases] + ["all"],
         help="Specify testcase to run",
         default="all",
+        nargs="?",
     )
 else:
     full_parser.add_argument(
@@ -52,6 +53,7 @@ else:
         help="Specify testcase to run",
         choices=["all"],
         default="all",
+        nargs="?",
     )
 
 full_parser.add_argument("pytest_args", nargs=argparse.REMAINDER)
