@@ -76,7 +76,7 @@ def derive_target_path():
     if IS_DOCKER_ENV:
         return "/workspaces"
     else:
-        return "."
+        return os.getcwd()
 
 
 TARGETPATH = derive_target_path()

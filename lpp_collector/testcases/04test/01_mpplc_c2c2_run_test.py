@@ -135,10 +135,10 @@ def execution_task(casl2_file, out_file):
 # ===================================
 
 TEST_RESULT_DIR = "test_results"
-TEST_EXPECT_DIR = "test_expects"
+TEST_EXPECT_DIR = Path(__file__).parent / Path("test_expects")
 CASL2_FILE_DIR = "casl2"
 
-test_data = sorted(glob.glob("/lpp/test/input*/*.mpl", recursive=True))
+test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input*/*.mpl", recursive=True))
 
 
 @pytest.mark.timeout(15)
