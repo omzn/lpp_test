@@ -1,5 +1,7 @@
-"""課題2用テスト"""
+"""課題2用メタモーフィックテスト"""
 
+# 課題2では，1回実行した出力を再度入力として実行させても
+# 全く同一の出力が得られるべき
 import os
 import glob
 import subprocess
@@ -9,7 +11,8 @@ from pathlib import Path
 import itertools
 import pytest
 
-TARGETPATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
+from lpp_collector.config import TARGETPATH, TEST_BASE_DIR
+
 
 TARGET = "pp"
 
@@ -73,47 +76,47 @@ def common_task(mpl_file, out_file):
 # ===================================
 
 TEST_RESULT_DIR = "test_results"
-TEST_EXPECT_DIR = "test_expects"
+TEST_EXPECT_DIR = Path(__file__).parent / Path("test_expects")
 
 # 全てのテストデータ
-test_data = sorted(glob.glob("../input0[12]/*.mpl", recursive=True))
+test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input0[12]/*.mpl", recursive=True))
 # エラーが出ないことが期待されるデータのみ
-test_valid_data = sorted(glob.glob("../input0[12]/sample[!0]*.mpl", recursive=True))
+test_valid_data = sorted(
+    glob.glob(f"{TEST_BASE_DIR}/input0[12]/sample[!0]*.mpl", recursive=True)
+)
+
+paramed_test_data = [
+    pytest.param(mpl_file, id=Path(mpl_file).stem) for mpl_file in test_data
+]
 
 
 @pytest.mark.timeout(10)
-@pytest.mark.parametrize(("mpl_file"), test_data)
-def test_run(mpl_file):
-    """準備したテストケースを全て実行する．"""
-    # 期待された出力が得られるかを確認．ただし，厳密すぎるため，テストに通らないからといってダメというわけではない．
+@pytest.mark.parametrize(("mpl_file"), paramed_test_data)
+def test_idempotency(mpl_file):
+    """メタモーフィックテストによって，冪等性を確認"""
+    # 自分自身が生成したソースコードを読み込ませると同じファイルを生成するはず．
     if not Path(TEST_RESULT_DIR).exists():
         os.mkdir(TEST_RESULT_DIR)
     out_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out")
+    # 1回目の実行
     res = common_task(mpl_file, out_file)
-    # 正常終了した場合
     if res == 0:
-        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
-        with open(out_file, encoding="utf-8") as ofp, open(
-            expect_file, encoding="utf-8"
-        ) as efp:
-            out_cont = ofp.read().splitlines()
-            est_cont = efp.read().splitlines()
+        out2_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out2")
+        # 2回目の実行
+        res1 = common_task(out_file, out2_file)
+        if res1 == 0:
+            with open(out2_file, encoding="utf-8") as ofp2, open(
+                out_file, encoding="utf-8"
+            ) as ofp1:
+                out_cont = ofp2.read().splitlines()
+                est_cont = ofp1.read().splitlines()
             for out_line, est_line in itertools.zip_longest(
                 out_cont, est_cont, fillvalue=""
             ):
                 assert out_line == est_line, "Line does not match."
-
-    # 異常終了した場合
+        else:
+            # 実行結果がエラーになるのであれば，それはダメ
+            assert False, "Pretty print idempotency is broken."
     else:
-        # エラーの行番号が正しいかを確認
-        # (正解データの前後1行にあるものまで許容)
-        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stderr")
-        with open(out_file, encoding="utf-8") as ofp, open(
-            expect_file, encoding="utf-8"
-        ) as efp:
-            try:
-                o = int(re.search(r"(\d+)", ofp.read()).group())
-                e = int(re.search(r"(\d+)", efp.read()).group())
-                assert o - 1 <= e <= o + 1, "Line number of error message is different."
-            except IndexError:
-                assert False, "Line number does not appear in error message."
+        # エラーになるわけがないテストデータのみを与えるので，ここは無条件にダメ
+        assert False, "Pretty print idempotency is broken."

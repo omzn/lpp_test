@@ -6,10 +6,11 @@ import re
 from pathlib import Path
 import glob
 import subprocess
+import itertools
+import pytest
 
-TARGETPATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
+from lpp_collector.config import TARGETPATH, TEST_BASE_DIR
 
-# import pytest
 
 TARGET = "tc"
 
@@ -79,38 +80,31 @@ def common_task(mpl_file, out_file):
 # ===================================
 
 TEST_RESULT_DIR = "test_results"
-TEST_EXPECT_DIR = "test_expects"
+TEST_EXPECT_DIR = Path(__file__).parent / Path("test_expects")
 
-test_data = sorted(glob.glob("../input01/*.mpl", recursive=True))
+test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input01/*.mpl", recursive=True))
+paramed_test_data = [
+    pytest.param(mpl_file, id=Path(mpl_file).stem) for mpl_file in test_data
+]
 
 
-def test_compile():
-    """指定ディレクトリでコンパイルができるかをテスト"""
-    cwd = os.getcwd()
-    os.chdir(TARGETPATH)
-    if os.path.isfile("Makefile"):
-        exec_res = command("make")
+@pytest.mark.timeout(10)
+@pytest.mark.parametrize(("mpl_file"), paramed_test_data)
+def test_run(mpl_file):
+    """準備したテストケースを全て実行する．"""
+    if not Path(TEST_RESULT_DIR).exists():
+        os.mkdir(TEST_RESULT_DIR)
+    out_file = Path(TEST_RESULT_DIR).joinpath(Path(mpl_file).stem + ".out")
+    res = common_task(mpl_file, out_file)
+    if res == 0:
+        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
+        with open(out_file, encoding="utf-8") as ofp, open(
+            expect_file, encoding="utf-8"
+        ) as efp:
+            out_cont = ofp.read().splitlines()
+            est_cont = efp.read().splitlines()
+            for out_line, est_line in itertools.zip_longest(out_cont, est_cont):
+                assert out_line == est_line, "Line does not match."
     else:
-        exec_res = command(f"gcc -w -o {TARGET} *.c")
-    os.chdir(cwd)
-    exec_res.pop(0)
-    serr = exec_res.pop(0)
-    assert not serr, "Compilation failed."
-
-
-def test_no_param():
-    """引数を付けずに実行するテスト"""
-    exe = Path(TARGETPATH) / Path(TARGET)
-    exec_res = command(f"{exe}")
-    exec_res.pop(0)
-    serr = exec_res.pop(0)
-    assert serr, "No error message when no parameter is given."
-
-
-def test_not_valid_file():
-    """存在しないファイルを引数にした場合のテスト"""
-    exe = Path(TARGETPATH) / Path(TARGET)
-    exec_res = command(f"{exe} hogehoge")
-    exec_res.pop(0)
-    serr = exec_res.pop(0)
-    assert serr, "No error message when non existent file is given."
+        with open(out_file, encoding="utf-8") as ofp:
+            assert not ofp.read() == "", "Error message should appear."

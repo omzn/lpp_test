@@ -75,14 +75,13 @@ COPY --from=build_env /starship/starship /usr/local/bin/starship
 COPY ./docker/pytest /usr/local/bin/pytest
 COPY ./docker/bashrc /root/.bashrc
 COPY ./docker/issue /etc/issue
-COPY ./docker/lpptest /usr/local/bin/lpptest
+# COPY ./docker/lpptest /usr/local/bin/lpptest
 COPY ./docker/starship.toml /root/.config/starship.toml
 COPY ./docker/lpptest_completion /etc/bash_completion.d/lpptest_completion
 
-COPY --from=build_env /casljs /casljs
+RUN touch /.dockerenv
 
-# Copy testcases
-COPY ./testcases/ ./
+COPY --from=build_env /casljs /casljs
 
 RUN echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/motd && cat /etc/issue ' >> /etc/bash.bashrc
 

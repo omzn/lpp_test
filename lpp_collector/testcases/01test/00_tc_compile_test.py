@@ -1,21 +1,19 @@
-"""課題2用テスト"""
+"""課題1コンパイル用テスト"""
 
 import os
-import glob
-import subprocess
 import sys
 import re
 from pathlib import Path
+import glob
+import subprocess
 
-TARGETPATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
+from lpp_collector.config import TARGETPATH, TEST_BASE_DIR
 
-# import pytest
-
-TARGET = "pp"
+TARGET = "tc"
 
 
-class ParseError(Exception):
-    """構文エラーハンドラ"""
+class ScanError(Exception):
+    """字句解析エラーハンドラ"""
 
 
 def command(cmd):
@@ -40,20 +38,26 @@ def command(cmd):
 def common_task(mpl_file, out_file):
     """共通して実行するタスク"""
     try:
+        #        tc = Path(__file__).parent.parent.joinpath("tc")
         exe = Path(TARGETPATH) / Path(TARGET)
         exec_res = command(f"{exe} {mpl_file}")
         out = []
         sout = exec_res.pop(0)
         serr = exec_res.pop(0)
         if serr:
-            raise ParseError(serr)
+            raise ScanError(serr)
         for line in sout.splitlines():
-            out.append(line)
+            if re.search(r"Identifier", line, re.I):
+                continue
+            if re.search(r'\s*"\s*\S*\s*"\s*\d+\s*', line):
+                formatted = re.sub(r'\s*"\s*(\S*)\s*"\s*(\d+)\s*', r'"\1"\t\2\n', line)
+                out.append(formatted)
+        out.sort()
         with open(out_file, mode="w", encoding="utf-8") as fp:
             for l in out:
-                fp.write(l + "\n")
+                fp.write(l)
         return 0
-    except ParseError as exc:
+    except ScanError as exc:
         if re.search(r"sample0", mpl_file):
             for line in serr.splitlines():
                 out.append(line)
@@ -61,7 +65,7 @@ def common_task(mpl_file, out_file):
                 for l in out:
                     fp.write(l + "\n")
             return 1
-        raise ParseError(serr) from exc
+        raise ScanError(serr) from exc
     except Exception as err:
         with open(out_file, mode="w", encoding="utf-8") as fp:
             print(err, file=fp)
@@ -75,10 +79,7 @@ def common_task(mpl_file, out_file):
 TEST_RESULT_DIR = "test_results"
 TEST_EXPECT_DIR = "test_expects"
 
-# 全てのテストデータ
-test_data = sorted(glob.glob("../input0[12]/*.mpl", recursive=True))
-# エラーが出ないことが期待されるデータのみ
-test_valid_data = sorted(glob.glob("../input0[12]/sample[!0]*.mpl", recursive=True))
+test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input01/*.mpl", recursive=True))
 
 
 def test_compile():

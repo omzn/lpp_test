@@ -1,15 +1,12 @@
 # Configuration
 
 import os
-
+import lpp_collector
 
 LPP_BASE_URL = (
     os.environ["LPP_BASE_URL"]
     if "LPP_BASE_URL" in os.environ
     else "https://se.is.kit.ac.jp/lpp_api/"
-)
-LPP_DATA_DIR = (
-    os.environ["LPP_DATA_DIR"] if "LPP_DATA_DIR" in os.environ else "/lpp/data"
 )
 
 LPP_CONSENT_TEXT = """
@@ -46,4 +43,38 @@ LPP_REVOKE_CONSENT_TEXT = """
 
 LPP_SOURCE_FILES = ["*.c", "*.h", "CMakelists.txt", "Makefile"]
 
-WORKSPACE_PATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
+TEST_BASE_DIR = os.path.join(os.path.dirname(lpp_collector.__file__), "testcases")
+
+# Docker environment
+IS_DOCKER_ENV = os.path.exists("/.dockerenv")
+DOCKER_IMAGE = (
+    os.environ["DOCKER_IMAGE"]
+    if "DOCKER_IMAGE" in os.environ
+    else "ghcr.io/f0reacharr/lpp_test:latest"
+)
+
+
+def derive_data_dir():
+    if "LPP_DATA_DIR" in os.environ:
+        return os.environ["LPP_DATA_DIR"]
+
+    if IS_DOCKER_ENV:
+        return "/lpp/data"
+    else:
+        return os.path.expanduser("~/.config/lpp")
+
+
+LPP_DATA_DIR = derive_data_dir()
+
+
+def derive_target_path():
+    if "LPP_TARGET_PATH" in os.environ:
+        return os.environ["LPP_TARGET_PATH"]
+
+    if IS_DOCKER_ENV:
+        return "/workspaces"
+    else:
+        return os.getcwd()
+
+
+TARGETPATH = derive_target_path()

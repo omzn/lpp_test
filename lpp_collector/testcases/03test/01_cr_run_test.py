@@ -1,4 +1,4 @@
-"""課題1用テスト"""
+"""課題3用テスト"""
 
 import os
 import sys
@@ -9,13 +9,13 @@ import subprocess
 import itertools
 import pytest
 
-TARGETPATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
+from lpp_collector.config import TARGETPATH, TEST_BASE_DIR
 
-TARGET = "tc"
+TARGET = "cr"
 
 
-class ScanError(Exception):
-    """字句解析エラーハンドラ"""
+class SemanticError(Exception):
+    """意味解析エラーハンドラ"""
 
 
 def command(cmd):
@@ -29,8 +29,6 @@ def command(cmd):
             stderr=subprocess.PIPE,
             universal_newlines=True,
         )
-        #        for line in result.stdout.splitlines():
-        #            yield line
         return [result.stdout, result.stderr]
     except subprocess.CalledProcessError:
         print(f"外部プログラムの実行に失敗しました [{cmd}]", file=sys.stderr)
@@ -40,30 +38,24 @@ def command(cmd):
 def common_task(mpl_file, out_file):
     """共通して実行するタスク"""
     try:
-        #        tc = Path(__file__).parent.parent.joinpath("tc")
         exe = Path(TARGETPATH) / Path(TARGET)
         exec_res = command(f"{exe} {mpl_file}")
         out = []
         sout = exec_res.pop(0)
         serr = exec_res.pop(0)
         if serr:
-            raise ScanError(serr)
+            raise SemanticError(serr)
         for line in sout.splitlines():
-            if re.search(r"Identifier", line):
-                continue
-            #            if re.search(r'StringLiteral',line):
-            #                continue
-            #            if re.search(r'NumberLiteral',line):
-            #                continue
-            if re.search(r'\s*"\s*\S*\s*"\s*\d+\s*', line):
-                formatted = re.sub(r'\s*"\s*(\S*)\s*"\s*(\d+)\s*', r'"\1"\t\2\n', line)
-                out.append(formatted)
-        out.sort()
-        with open(out_file, mode="w", encoding="utf-8") as fp:
-            for l in out:
-                fp.write(l)
-        return 0
-    except ScanError as exc:
+            out.append(re.sub(r"\s", r"", line))
+        if out:
+            out.pop(0)  # 1行目を捨てる
+            out.sort()
+            with open(out_file, mode="w", encoding="utf-8") as fp:
+                for l in out:
+                    fp.write(l + "\n")
+            return 0
+        raise SemanticError(serr)
+    except SemanticError as exc:
         if re.search(r"sample0", mpl_file):
             for line in serr.splitlines():
                 out.append(line)
@@ -71,7 +63,7 @@ def common_task(mpl_file, out_file):
                 for l in out:
                     fp.write(l + "\n")
             return 1
-        raise ScanError(serr) from exc
+        raise SemanticError(serr) from exc
     except Exception as err:
         with open(out_file, mode="w", encoding="utf-8") as fp:
             print(err, file=fp)
@@ -83,14 +75,18 @@ def common_task(mpl_file, out_file):
 # ===================================
 
 TEST_RESULT_DIR = "test_results"
-TEST_EXPECT_DIR = "test_expects"
+TEST_EXPECT_DIR = Path(__file__).parent / Path("test_expects")
 
-test_data = sorted(glob.glob("../input01/*.mpl", recursive=True))
+test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input0[123]/*.mpl", recursive=True))
+
+paramed_test_data = [
+    pytest.param(mpl_file, id=Path(mpl_file).stem) for mpl_file in test_data
+]
 
 
 @pytest.mark.timeout(10)
-@pytest.mark.parametrize(("mpl_file"), test_data)
-def test_run(mpl_file):
+@pytest.mark.parametrize(("mpl_file"), paramed_test_data)
+def test_cr_run(mpl_file):
     """準備したテストケースを全て実行する．"""
     if not Path(TEST_RESULT_DIR).exists():
         os.mkdir(TEST_RESULT_DIR)
@@ -107,6 +103,15 @@ def test_run(mpl_file):
                 out_cont, est_cont, fillvalue=""
             ):
                 assert out_line == est_line, "Line does not match."
+
     else:
-        with open(out_file, encoding="utf-8") as ofp:
-            assert not ofp.read() == "", "Error message should appear."
+        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stderr")
+        with open(out_file, encoding="utf-8") as ofp, open(
+            expect_file, encoding="utf-8"
+        ) as efp:
+            try:
+                o = int(re.search(r"(\d+)", ofp.read()).group())
+                e = int(re.search(r"(\d+)", efp.read()).group())
+                assert o - 1 <= e <= o + 1, "Line number of error message is different."
+            except IndexError:
+                assert False, "Line number does not appear in error message."

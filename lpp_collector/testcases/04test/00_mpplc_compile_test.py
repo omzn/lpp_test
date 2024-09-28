@@ -1,4 +1,4 @@
-"""課題3用テスト"""
+"""課題4用コンパイルテスト"""
 
 import os
 import sys
@@ -6,16 +6,17 @@ import re
 from pathlib import Path
 import glob
 import subprocess
+import shutil
 
-TARGETPATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
+from lpp_collector.config import TARGETPATH, TEST_BASE_DIR
 
 # import pytest
 
-TARGET = "cr"
+TARGET = "mpplc"
 
 
-class SemanticError(Exception):
-    """意味解析エラーハンドラ"""
+class CompileError(Exception):
+    """コンパイルエラーハンドラ"""
 
 
 def command(cmd):
@@ -38,32 +39,33 @@ def command(cmd):
 def common_task(mpl_file, out_file):
     """共通して実行するタスク"""
     try:
+        # mpplc = Path(__file__).parent.parent.joinpath("mpplc")
         exe = Path(TARGETPATH) / Path(TARGET)
         exec_res = command(f"{exe} {mpl_file}")
+        cslfile = Path(Path(mpl_file).stem + ".csl")
+        if not cslfile.exists():
+            cslfile = Path(mpl_file).parent / Path(Path(mpl_file).stem + ".csl")
+            if not cslfile.exists():
+                raise CompileError(".csl file not found.")
         out = []
-        sout = exec_res.pop(0)
+        exec_res.pop(0)
         serr = exec_res.pop(0)
         if serr:
-            raise SemanticError(serr)
-        for line in sout.splitlines():
-            out.append(re.sub(r"\s", r"", line))
-        if out:
-            out.pop(0)
-            out.sort()
-            with open(out_file, mode="w", encoding="utf-8") as fp:
-                for l in out:
-                    fp.write(l + "\n")
-            return 0
-        raise SemanticError(serr)
-    except SemanticError as exc:
+            raise CompileError(serr)
+        casl2file = Path(__file__).parent / Path(CASL2_FILE_DIR) / Path(cslfile)
+        os.rename(cslfile, casl2file)
+        return 0
+    except CompileError as exc:
         if re.search(r"sample0", mpl_file):
+            out = []
             for line in serr.splitlines():
                 out.append(line)
             with open(out_file, mode="w", encoding="utf-8") as fp:
                 for l in out:
                     fp.write(l + "\n")
+            os.remove(cslfile)
             return 1
-        raise SemanticError(serr) from exc
+        raise CompileError(serr) from exc
     except Exception as err:
         with open(out_file, mode="w", encoding="utf-8") as fp:
             print(err, file=fp)
@@ -76,8 +78,9 @@ def common_task(mpl_file, out_file):
 
 TEST_RESULT_DIR = "test_results"
 TEST_EXPECT_DIR = "test_expects"
+CASL2_FILE_DIR = "casl2"
 
-test_data = sorted(glob.glob("../input*/*.mpl", recursive=True))
+test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input*/*.mpl", recursive=True))
 
 
 def test_compile():
@@ -91,7 +94,7 @@ def test_compile():
     os.chdir(cwd)
     exec_res.pop(0)
     serr = exec_res.pop(0)
-    assert not serr, "Compilation failed."
+    assert not serr, "mpplcのコンパイルに失敗しました"
 
 
 def test_no_param():
@@ -100,7 +103,7 @@ def test_no_param():
     exec_res = command(f"{exe}")
     exec_res.pop(0)
     serr = exec_res.pop(0)
-    assert serr, "No error message when no parameter is given."
+    assert serr, "パラーメータを与えない時にエラーがでません"
 
 
 def test_not_valid_file():
@@ -109,4 +112,29 @@ def test_not_valid_file():
     exec_res = command(f"{exe} hogehoge")
     exec_res.pop(0)
     serr = exec_res.pop(0)
-    assert serr, "No error message when non existent file is given."
+    assert serr, "存在しないファイル名を与えた時にエラーがでません"
+
+
+def test_absolute_path_file():
+    """絶対パスでファイルを指定した場合のテスト"""
+    shutil.copy("../input01/sample12.mpl", "/tmp/sample12.mpl")
+    exe = Path(TARGETPATH) / Path(TARGET)
+    command(f"{exe} /tmp/sample12.mpl")
+    if os.path.isfile("./sample12.csl"):
+        assert True
+    elif os.path.isfile("/tmp/sample12.csl"):
+        assert True
+    else:
+        assert False, "絶対パスでのファイル名指定ができていません"
+
+
+def test_relative_path_file():
+    """相対パスでファイルを指定した場合のテスト"""
+    exe = Path(TARGETPATH) / Path(TARGET)
+    command(f"{exe} ../input01/sample12.mpl")
+    if os.path.isfile("./sample12.csl"):
+        assert True
+    elif os.path.isfile("../input01/sample12.csl"):
+        assert True
+    else:
+        assert False, "相対パスでのファイル名指定ができていません"

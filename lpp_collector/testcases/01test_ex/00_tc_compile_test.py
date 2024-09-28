@@ -1,4 +1,4 @@
-"""課題1コンパイル用テスト"""
+"""課題1拡張用テスト"""
 
 import os
 import sys
@@ -7,7 +7,7 @@ from pathlib import Path
 import glob
 import subprocess
 
-TARGETPATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
+from lpp_collector.config import TARGETPATH, TEST_BASE_DIR
 
 # import pytest
 
@@ -49,15 +49,15 @@ def common_task(mpl_file, out_file):
         if serr:
             raise ScanError(serr)
         for line in sout.splitlines():
-            if re.search(r"Identifier", line, re.I):
-                continue
-            if re.search(r'\s*"\s*\S*\s*"\s*\d+\s*', line):
-                formatted = re.sub(r'\s*"\s*(\S*)\s*"\s*(\d+)\s*', r'"\1"\t\2\n', line)
+            if re.search(r'\s*"\s*\S*\s*"\s*\d+\s*', line) or re.search(
+                r'\s*"\s*\S*\s*"\s*"\s*\S*\s*"\s*\d+\s*', line
+            ):
+                formatted = re.sub(r"\s+", r"", line)
                 out.append(formatted)
         out.sort()
         with open(out_file, mode="w", encoding="utf-8") as fp:
             for l in out:
-                fp.write(l)
+                fp.write(l + "\n")
         return 0
     except ScanError as exc:
         if re.search(r"sample0", mpl_file):
@@ -81,7 +81,7 @@ def common_task(mpl_file, out_file):
 TEST_RESULT_DIR = "test_results"
 TEST_EXPECT_DIR = "test_expects"
 
-test_data = sorted(glob.glob("../input01/*.mpl", recursive=True))
+test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input01/*.mpl", recursive=True))
 
 
 def test_compile():

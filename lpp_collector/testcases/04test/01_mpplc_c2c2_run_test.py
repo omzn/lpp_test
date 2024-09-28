@@ -9,7 +9,7 @@ import subprocess
 import itertools
 import pytest
 
-TARGETPATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
+from lpp_collector.config import TARGETPATH, TEST_BASE_DIR
 
 
 TARGET = "mpplc"
@@ -40,7 +40,6 @@ def command(cmd):
         )
         return [result.stdout, result.stderr]
     except subprocess.CalledProcessError as exc:
-        #        print(f"外部プログラムの実行に失敗しました [{cmd}]", file=sys.stderr)
         raise Comet2ExecutionError("Failed to execute COMET II") from exc
 
 
@@ -102,7 +101,6 @@ def compile_task(mpl_file, out_file):
 def execution_task(casl2_file, out_file):
     """c2c2実行タスク"""
     try:
-        #        c2c2 = Path(__file__).parent.parent.joinpath("c2c2.js")
         c2c2 = Path("/casljs") / Path("c2c2.js")
         assembler_text = interactive_command(f"node {c2c2} -n -c -a {casl2_file}")
         if "DEFINED SYMBOLS" not in assembler_text:
@@ -135,14 +133,17 @@ def execution_task(casl2_file, out_file):
 # ===================================
 
 TEST_RESULT_DIR = "test_results"
-TEST_EXPECT_DIR = "test_expects"
+TEST_EXPECT_DIR = Path(__file__).parent / Path("test_expects")
 CASL2_FILE_DIR = "casl2"
 
-test_data = sorted(glob.glob("/lpp/test/input*/*.mpl", recursive=True))
+test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input*/*.mpl", recursive=True))
+paramed_test_data = [
+    pytest.param(mpl_file, id=Path(mpl_file).stem) for mpl_file in test_data
+]
 
 
 @pytest.mark.timeout(15)
-@pytest.mark.parametrize(("mpl_file"), test_data)
+@pytest.mark.parametrize(("mpl_file"), paramed_test_data)
 def test_mpplc_run(mpl_file):
     """mpplcを実行する"""
     if not Path(TEST_RESULT_DIR).exists():

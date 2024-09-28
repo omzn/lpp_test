@@ -1,22 +1,21 @@
-"""課題4用コンパイルテスト"""
+"""課題2用テスト"""
 
 import os
+import glob
+import subprocess
 import sys
 import re
 from pathlib import Path
-import glob
-import subprocess
-import shutil
 
-TARGETPATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
+from lpp_collector.config import TARGETPATH, TEST_BASE_DIR
 
 # import pytest
 
-TARGET = "mpplc"
+TARGET = "pp"
 
 
-class CompileError(Exception):
-    """コンパイルエラーハンドラ"""
+class ParseError(Exception):
+    """構文エラーハンドラ"""
 
 
 def command(cmd):
@@ -30,6 +29,8 @@ def command(cmd):
             stderr=subprocess.PIPE,
             universal_newlines=True,
         )
+        #        for line in result.stdout.splitlines():
+        #            yield line
         return [result.stdout, result.stderr]
     except subprocess.CalledProcessError:
         print(f"外部プログラムの実行に失敗しました [{cmd}]", file=sys.stderr)
@@ -39,33 +40,28 @@ def command(cmd):
 def common_task(mpl_file, out_file):
     """共通して実行するタスク"""
     try:
-        # mpplc = Path(__file__).parent.parent.joinpath("mpplc")
         exe = Path(TARGETPATH) / Path(TARGET)
         exec_res = command(f"{exe} {mpl_file}")
-        cslfile = Path(Path(mpl_file).stem + ".csl")
-        if not cslfile.exists():
-            cslfile = Path(mpl_file).parent / Path(Path(mpl_file).stem + ".csl")
-            if not cslfile.exists():
-                raise CompileError(".csl file not found.")
         out = []
-        exec_res.pop(0)
+        sout = exec_res.pop(0)
         serr = exec_res.pop(0)
         if serr:
-            raise CompileError(serr)
-        casl2file = Path(__file__).parent / Path(CASL2_FILE_DIR) / Path(cslfile)
-        os.rename(cslfile, casl2file)
+            raise ParseError(serr)
+        for line in sout.splitlines():
+            out.append(line)
+        with open(out_file, mode="w", encoding="utf-8") as fp:
+            for l in out:
+                fp.write(l + "\n")
         return 0
-    except CompileError as exc:
+    except ParseError as exc:
         if re.search(r"sample0", mpl_file):
-            out = []
             for line in serr.splitlines():
                 out.append(line)
             with open(out_file, mode="w", encoding="utf-8") as fp:
                 for l in out:
                     fp.write(l + "\n")
-            os.remove(cslfile)
             return 1
-        raise CompileError(serr) from exc
+        raise ParseError(serr) from exc
     except Exception as err:
         with open(out_file, mode="w", encoding="utf-8") as fp:
             print(err, file=fp)
@@ -78,9 +74,13 @@ def common_task(mpl_file, out_file):
 
 TEST_RESULT_DIR = "test_results"
 TEST_EXPECT_DIR = "test_expects"
-CASL2_FILE_DIR = "casl2"
 
-test_data = sorted(glob.glob("../input*/*.mpl", recursive=True))
+# 全てのテストデータ
+test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input0[12]/*.mpl", recursive=True))
+# エラーが出ないことが期待されるデータのみ
+test_valid_data = sorted(
+    glob.glob(f"{TEST_BASE_DIR}/input0[12]/sample[!0]*.mpl", recursive=True)
+)
 
 
 def test_compile():
@@ -94,7 +94,7 @@ def test_compile():
     os.chdir(cwd)
     exec_res.pop(0)
     serr = exec_res.pop(0)
-    assert not serr, "mpplcのコンパイルに失敗しました"
+    assert not serr, "Compilation failed."
 
 
 def test_no_param():
@@ -103,7 +103,7 @@ def test_no_param():
     exec_res = command(f"{exe}")
     exec_res.pop(0)
     serr = exec_res.pop(0)
-    assert serr, "パラーメータを与えない時にエラーがでません"
+    assert serr, "No error message when no parameter is given."
 
 
 def test_not_valid_file():
@@ -112,29 +112,4 @@ def test_not_valid_file():
     exec_res = command(f"{exe} hogehoge")
     exec_res.pop(0)
     serr = exec_res.pop(0)
-    assert serr, "存在しないファイル名を与えた時にエラーがでません"
-
-
-def test_absolute_path_file():
-    """絶対パスでファイルを指定した場合のテスト"""
-    shutil.copy("../input01/sample12.mpl", "/tmp/sample12.mpl")
-    exe = Path(TARGETPATH) / Path(TARGET)
-    command(f"{exe} /tmp/sample12.mpl")
-    if os.path.isfile("./sample12.csl"):
-        assert True
-    elif os.path.isfile("/tmp/sample12.csl"):
-        assert True
-    else:
-        assert False, "絶対パスでのファイル名指定ができていません"
-
-
-def test_relative_path_file():
-    """相対パスでファイルを指定した場合のテスト"""
-    exe = Path(TARGETPATH) / Path(TARGET)
-    command(f"{exe} ../input01/sample12.mpl")
-    if os.path.isfile("./sample12.csl"):
-        assert True
-    elif os.path.isfile("../input01/sample12.csl"):
-        assert True
-    else:
-        assert False, "相対パスでのファイル名指定ができていません"
+    assert serr, "No error message when non existent file is given."

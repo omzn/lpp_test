@@ -1,4 +1,4 @@
-"""課題1拡張用テスト"""
+"""課題1用テスト"""
 
 import os
 import sys
@@ -9,8 +9,7 @@ import subprocess
 import itertools
 import pytest
 
-TARGETPATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
-
+from lpp_collector.config import TARGETPATH, TEST_BASE_DIR
 
 TARGET = "tc"
 
@@ -50,15 +49,19 @@ def common_task(mpl_file, out_file):
         if serr:
             raise ScanError(serr)
         for line in sout.splitlines():
-            if re.search(r'\s*"\s*\S*\s*"\s*\d+\s*', line) or re.search(
-                r'\s*"\s*\S*\s*"\s*"\s*\S*\s*"\s*\d+\s*', line
-            ):
-                formatted = re.sub(r"\s+", r"", line)
+            if re.search(r"Identifier", line):
+                continue
+            #            if re.search(r'StringLiteral',line):
+            #                continue
+            #            if re.search(r'NumberLiteral',line):
+            #                continue
+            if re.search(r'\s*"\s*\S*\s*"\s*\d+\s*', line):
+                formatted = re.sub(r'\s*"\s*(\S*)\s*"\s*(\d+)\s*', r'"\1"\t\2\n', line)
                 out.append(formatted)
         out.sort()
         with open(out_file, mode="w", encoding="utf-8") as fp:
             for l in out:
-                fp.write(l + "\n")
+                fp.write(l)
         return 0
     except ScanError as exc:
         if re.search(r"sample0", mpl_file):
@@ -80,13 +83,16 @@ def common_task(mpl_file, out_file):
 # ===================================
 
 TEST_RESULT_DIR = "test_results"
-TEST_EXPECT_DIR = "test_expects"
+TEST_EXPECT_DIR = Path(__file__).parent / Path("test_expects")
 
-test_data = sorted(glob.glob("../input01/*.mpl", recursive=True))
+test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input01/*.mpl", recursive=True))
+paramed_test_data = [
+    pytest.param(mpl_file, id=Path(mpl_file).stem) for mpl_file in test_data
+]
 
 
 @pytest.mark.timeout(10)
-@pytest.mark.parametrize(("mpl_file"), test_data)
+@pytest.mark.parametrize(("mpl_file"), paramed_test_data)
 def test_run(mpl_file):
     """準備したテストケースを全て実行する．"""
     if not Path(TEST_RESULT_DIR).exists():
@@ -100,7 +106,9 @@ def test_run(mpl_file):
         ) as efp:
             out_cont = ofp.read().splitlines()
             est_cont = efp.read().splitlines()
-            for out_line, est_line in itertools.zip_longest(out_cont, est_cont):
+            for out_line, est_line in itertools.zip_longest(
+                out_cont, est_cont, fillvalue=""
+            ):
                 assert out_line == est_line, "Line does not match."
     else:
         with open(out_file, encoding="utf-8") as ofp:
