@@ -79,7 +79,7 @@ def run_pytest(args):
     # Sort testcases by name
     testcase_paths = sorted([str(testcase.absolute()) for testcase in testcases])
 
-    print(f"Running pytest with {testcase_paths}")
+    # print(f"Running pytest with {testcase_paths}")
 
     pwd = os.getcwd()
     os.environ["LPP_TARGET_PATH"] = pwd
@@ -96,7 +96,7 @@ def run_pytest(args):
 
 def main():
     args = full_parser.parse_args()
-    print(args)
+    # print(args)
     if args.run_pytest or IS_DOCKER_ENV:
         run_pytest(args)
     else:
