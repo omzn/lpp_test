@@ -77,6 +77,9 @@ TEST_EXPECT_DIR = Path(__file__).parent / Path("test_expects")
 
 # 全てのテストデータ
 test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input0[12]/*.mpl", recursive=True))
+paramed_test_data = [
+    pytest.param(mpl_file, id=Path(mpl_file).stem) for mpl_file in test_data
+]
 # エラーが出ないことが期待されるデータのみ
 test_valid_data = sorted(
     glob.glob(f"{TEST_BASE_DIR}/input0[12]/sample[!0]*.mpl", recursive=True)
@@ -84,7 +87,7 @@ test_valid_data = sorted(
 
 
 @pytest.mark.timeout(10)
-@pytest.mark.parametrize(("mpl_file"), test_data)
+@pytest.mark.parametrize(("mpl_file"), paramed_test_data)
 def test_run(mpl_file):
     """準備したテストケースを全て実行する．"""
     # 期待された出力が得られるかを確認．ただし，厳密すぎるため，テストに通らないからといってダメというわけではない．

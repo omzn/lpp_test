@@ -85,9 +85,13 @@ test_valid_data = sorted(
     glob.glob(f"{TEST_BASE_DIR}/input0[12]/sample[!0]*.mpl", recursive=True)
 )
 
+paramed_test_data = [
+    pytest.param(mpl_file, id=Path(mpl_file).stem) for mpl_file in test_data
+]
+
 
 @pytest.mark.timeout(10)
-@pytest.mark.parametrize(("mpl_file"), test_valid_data)
+@pytest.mark.parametrize(("mpl_file"), paramed_test_data)
 def test_idempotency(mpl_file):
     """メタモーフィックテストによって，冪等性を確認"""
     # 自分自身が生成したソースコードを読み込ませると同じファイルを生成するはず．

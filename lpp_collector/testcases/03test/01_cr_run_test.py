@@ -79,9 +79,13 @@ TEST_EXPECT_DIR = Path(__file__).parent / Path("test_expects")
 
 test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input0[123]/*.mpl", recursive=True))
 
+paramed_test_data = [
+    pytest.param(mpl_file, id=Path(mpl_file).stem) for mpl_file in test_data
+]
+
 
 @pytest.mark.timeout(10)
-@pytest.mark.parametrize(("mpl_file"), test_data)
+@pytest.mark.parametrize(("mpl_file"), paramed_test_data)
 def test_cr_run(mpl_file):
     """準備したテストケースを全て実行する．"""
     if not Path(TEST_RESULT_DIR).exists():
