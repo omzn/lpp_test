@@ -12,6 +12,7 @@ from pathlib import Path
 import pytest
 from .docker import run_test_container, run_debug_build
 import os
+import pty
 
 all_testcases = [
     Path(testcase)
@@ -73,7 +74,7 @@ def run_pytest(args):
     # Sort testcases by name
     testcase_paths = sorted([str(testcase) for testcase in testcases])
 
-    pytest.main([*args.pytest_args, *testcase_paths])
+    pty.spawn(["pytest", *args.pytest_args, *testcase_paths])
 
 
 def main():

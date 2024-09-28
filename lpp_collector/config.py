@@ -61,7 +61,7 @@ def derive_data_dir():
     if IS_DOCKER_ENV:
         return "/lpp/data"
     else:
-        return os.path.expanduser("~/.config/lpp/data")
+        return os.path.expanduser("~/.config/lpp")
 
 
 LPP_DATA_DIR = derive_data_dir()
