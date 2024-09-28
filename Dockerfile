@@ -75,9 +75,11 @@ COPY --from=build_env /starship/starship /usr/local/bin/starship
 COPY ./docker/pytest /usr/local/bin/pytest
 COPY ./docker/bashrc /root/.bashrc
 COPY ./docker/issue /etc/issue
-COPY ./docker/lpptest /usr/local/bin/lpptest
+# COPY ./docker/lpptest /usr/local/bin/lpptest
 COPY ./docker/starship.toml /root/.config/starship.toml
 COPY ./docker/lpptest_completion /etc/bash_completion.d/lpptest_completion
+
+RUN touch /.dockerenv
 
 COPY --from=build_env /casljs /casljs
 
