@@ -64,6 +64,11 @@ def run_pytest(args):
     testcases = [
         testcase for testcase in all_testcases if testcase.parent.name == testsuite
     ]
+
+    if len(testcases) == 0:
+        print(f"No testcases found in {testsuite}")
+        return
+
     specified_testcases: List[str] = [args.testcases]
 
     if "all" not in specified_testcases:
@@ -72,9 +77,21 @@ def run_pytest(args):
         ]
 
     # Sort testcases by name
-    testcase_paths = sorted([str(testcase) for testcase in testcases])
+    testcase_paths = sorted([str(testcase.absolute()) for testcase in testcases])
 
-    pty.spawn(["pytest", *args.pytest_args, *testcase_paths])
+    print(f"Running pytest with {testcase_paths}")
+
+    pwd = os.getcwd()
+    os.environ["LPP_TARGET_PATH"] = pwd
+    os.chdir(TEST_BASE_DIR)
+    pty.spawn(
+        [
+            "pytest",
+            *args.pytest_args,
+            *testcase_paths,
+        ]
+    )
+    os.chdir(pwd)
 
 
 def main():

@@ -19,8 +19,8 @@ argcomplete = "^3.5.0"
 lpp_collector = "lpp_collector"
 
 [tool.poetry.scripts]
-consent = "lpp_collector.consent:main"
-lpptest = "lpp_collector.runner:main"
+lppconsent = "lpp_collector.consent:main"
+lpptest = "lpp_collector.runner:main_PYTHON_ARGCOMPLETE_OK"
 
 [build-system]
 requires = ["poetry-core"]

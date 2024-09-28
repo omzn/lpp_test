@@ -1,6 +1,10 @@
 import os
+from _pytest.main import Session
 from _pytest.config import Config
 from _pytest.reports import TestReport
+from _pytest.nodes import Item
+from typing import List
+from pathlib import Path
 
 from lpp_collector.config import TARGETPATH
 
