@@ -9,7 +9,7 @@ import subprocess
 import itertools
 import pytest
 
-TARGETPATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
+from lpp_collector.config import TARGETPATH, TEST_BASE_DIR
 
 
 TARGET = "tc"
@@ -82,7 +82,7 @@ def common_task(mpl_file, out_file):
 TEST_RESULT_DIR = "test_results"
 TEST_EXPECT_DIR = "test_expects"
 
-test_data = sorted(glob.glob("../input01/*.mpl", recursive=True))
+test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input01/*.mpl", recursive=True))
 
 
 @pytest.mark.timeout(10)

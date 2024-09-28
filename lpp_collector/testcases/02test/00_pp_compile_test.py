@@ -7,7 +7,7 @@ import sys
 import re
 from pathlib import Path
 
-TARGETPATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
+from lpp_collector.config import TARGETPATH, TEST_BASE_DIR
 
 # import pytest
 
@@ -76,9 +76,11 @@ TEST_RESULT_DIR = "test_results"
 TEST_EXPECT_DIR = "test_expects"
 
 # 全てのテストデータ
-test_data = sorted(glob.glob("../input0[12]/*.mpl", recursive=True))
+test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input0[12]/*.mpl", recursive=True))
 # エラーが出ないことが期待されるデータのみ
-test_valid_data = sorted(glob.glob("../input0[12]/sample[!0]*.mpl", recursive=True))
+test_valid_data = sorted(
+    glob.glob(f"{TEST_BASE_DIR}/input0[12]/sample[!0]*.mpl", recursive=True)
+)
 
 
 def test_compile():

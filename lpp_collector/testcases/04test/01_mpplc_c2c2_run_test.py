@@ -9,7 +9,7 @@ import subprocess
 import itertools
 import pytest
 
-TARGETPATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
+from lpp_collector.config import TARGETPATH, TEST_BASE_DIR
 
 
 TARGET = "mpplc"

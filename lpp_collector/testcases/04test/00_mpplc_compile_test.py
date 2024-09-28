@@ -8,7 +8,7 @@ import glob
 import subprocess
 import shutil
 
-TARGETPATH = os.environ["WSPATH"] if "WSPATH" in os.environ else "/workspaces"
+from lpp_collector.config import TARGETPATH, TEST_BASE_DIR
 
 # import pytest
 
@@ -80,7 +80,7 @@ TEST_RESULT_DIR = "test_results"
 TEST_EXPECT_DIR = "test_expects"
 CASL2_FILE_DIR = "casl2"
 
-test_data = sorted(glob.glob("../input*/*.mpl", recursive=True))
+test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input*/*.mpl", recursive=True))
 
 
 def test_compile():
