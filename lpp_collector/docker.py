@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import pty
 import time
+from typing import List
 from lpp_collector.config import (
     DOCKER_IMAGE,
     LPP_DATA_DIR,
@@ -11,7 +12,7 @@ from lpp_collector.config import (
 )
 
 
-def run_test_container(args):
+def run_test_container(args: List[str]):
     data_dir = str(Path(LPP_DATA_DIR).absolute())
     os.makedirs(data_dir, exist_ok=True)
     target_path = str(Path(TARGETPATH).absolute())

@@ -21,6 +21,7 @@ lpp_collector = "lpp_collector"
 [tool.poetry.scripts]
 lppconsent = "lpp_collector.consent:main"
 lpptest = "lpp_collector.runner:main_PYTHON_ARGCOMPLETE_OK"
+lppshell = "lpp_collector.shell:main"
 
 [build-system]
 requires = ["poetry-core"]

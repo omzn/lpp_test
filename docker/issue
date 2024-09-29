@@ -2,7 +2,6 @@
 
   /workspaces -- User workspace (mount point of your local directory)
   /casljs     -- Casl2 assembler / comet2 emulator
-  /lpp/test   -- Test suite for each assignment
 
 * Build your program               * Test your program
   (place exec on /workspaces)        (after building your program)

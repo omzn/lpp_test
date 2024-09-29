@@ -9,7 +9,6 @@ from lpp_collector.config import (
 import argcomplete, argparse
 import glob
 from pathlib import Path
-import pytest
 from .docker import fix_permission, run_test_container, run_debug_build, update
 import os
 import pty
