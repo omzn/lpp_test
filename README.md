@@ -1,20 +1,22 @@
 # lpp/test
 
 KIT言語処理プログラミング課題におけるテスト環境
+[`pipx`](https://pipx.pypa.io/stable/installation/)によりインストールされた`lpptest`コマンドを用いてテストを行う．
+`lpptest`コマンドは自動的にDockerを用いたテスト用環境を用意し，テストを行うことができる．
 
-Dockerイメージの中に展開して利用することを想定しています．
+## インストール方法
 
-## ディレクトリ配置
+[`pipx`](https://pipx.pypa.io/stable/installation/)に従う．
+その後、以下のコマンドを実行する．
 
-* /workspaces : 編集中のCのソースが置いてある場所
-  * 環境変数`WSPATH`で上書きも可能
-* /lpp/test   : テストケースが置かれているフォルダ
-* /lpp/test/input0[123] : サンプルmplファイルが置いてある場所
-  * `sample0*.mpl` は，実行時にエラーが出力されることが期待されている
-* /lpp/test/0[1234]test : 各課題に対するテスト
-* /lpp/test/0[1234]test/test_expects : 各課題に対するテストの期待される出力(オラクル)
-  * 以下のテストでは，エラーが出力される想定のものは，エラーの出た行番号が同じであればPASSとなる．
-* /lpp/test/coverage : C0カバレッジを上げていくためのテストケース(上記テストでは使わない)
+```bash
+pipx install git+https://github.com/f0reachARR/lpp_test --force
+```
+
+これにより，`lpptest`コマンドがインストールされる．
+インストール後は，ソースコードのあるディレクトリで`lpptest`コマンドを実行することでテストを行うことができる．
+
+## テストの実行
 
 ### 課題1の場合
 
@@ -25,8 +27,6 @@ lpptest 01test
 
 * 00_tc_compile_test.py - コンパイルできるか，引数の有無での動作，無効なファイル名を与えた動作
 * 01_tc_run_test.py - 空白を取り除いた出力を辞書順にソートしたものを比較する．
-
-> Tips: `lpptest`コマンドで指定するテストはTabキーで補完できます．
 
 ### 課題1拡張の場合
 
@@ -64,8 +64,20 @@ lpptest 03test
 ```bash
 # テストの実行
 lpptest 04test
-
 ```
 
 * 00_mpplc_compile_test.py - コンパイルできるか，引数の有無での動作，無効なファイル名を与えた動作
 * 01_mpplc_c2c2_run_test.py - コンパイルしたアセンブリプログラムがc2c2で実行できるかを見る．
+
+## Docker内部のディレクトリ配置
+
+各テストはDocker内部に置かれるため、普段意識する必要はない．
+なお、このレポジトリにおいては`lpp_collector/testcases`に配置されている．
+
+* /lpp/test   : テストケースが置かれているフォルダ
+* /lpp/test/input0[123] : サンプルmplファイルが置いてある場所
+  * `sample0*.mpl` は，実行時にエラーが出力されることが期待されている
+* /lpp/test/0[1234]test : 各課題に対するテスト
+* /lpp/test/0[1234]test/test_expects : 各課題に対するテストの期待される出力(オラクル)
+  * 以下のテストでは，エラーが出力される想定のものは，エラーの出た行番号が同じであればPASSとなる．
+* /lpp/test/coverage : C0カバレッジを上げていくためのテストケース(上記テストでは使わない)
