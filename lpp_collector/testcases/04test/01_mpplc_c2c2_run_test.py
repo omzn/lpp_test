@@ -138,7 +138,7 @@ CASL2_FILE_DIR = "casl2"
 
 test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input*/*.mpl", recursive=True))
 paramed_test_data = [
-    pytest.param(mpl_file, id=Path(mpl_file).stem) for mpl_file in test_data
+    pytest.param(mpl_file, id=Path(mpl_file).name) for mpl_file in test_data
 ]
 
 
