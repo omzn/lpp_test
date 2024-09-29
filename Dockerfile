@@ -87,7 +87,9 @@ RUN echo '[ ! -z "$TERM" -a -r /etc/motd ] && cat /etc/motd && cat /etc/issue ' 
 
 COPY --from=collector /app/dist/*.whl /tmp/
 
-RUN pip install /tmp/*.whl
+RUN pip install /tmp/*.whl \
+    && rm -rf /tmp/*.whl \
+    && python3 -c 'from lpp_collector.mklink import main; main()'
 
 VOLUME [ "/workspaces" ]
 WORKDIR /workspaces
