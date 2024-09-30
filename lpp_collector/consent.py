@@ -13,7 +13,11 @@ from .config import (
     LPP_REVOKE_CONSENT_TEXT,
 )
 from json import load, dump
-import typing
+
+try:
+    from typing import TypedDict
+except ImportError:
+    from typing_extensions import TypedDict
 from whiptail import Whiptail
 from .sel_client import Client
 from .sel_client.api.default import post_api_device, delete_api_device_device_id
@@ -21,7 +25,7 @@ from .sel_client.api.default import post_api_device, delete_api_device_device_id
 LPP_CONSENT_FILE = os.path.join(LPP_DATA_DIR, "consent.json")
 
 
-class ConsentData(typing.TypedDict):
+class ConsentData(TypedDict):
     device_id: str
 
 
