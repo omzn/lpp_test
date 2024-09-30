@@ -10,6 +10,7 @@ from lpp_collector.config import (
     LPP_UPDATE_MARKER,
     TARGETPATH,
 )
+import sys
 
 
 def run_test_container(args: List[str]):
