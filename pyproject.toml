@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "lpp-collector"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = ["f0reachARR <f0reach@f0reach.me>"]
 readme = "README.md"
