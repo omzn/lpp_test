@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-import pty
+import subprocess
 import time
 from typing import List
 from lpp_collector.config import (
@@ -42,7 +42,7 @@ def run_test_container(args: List[str]):
     ]
 
     # Run Docker container
-    pty.spawn(["docker", *run_args])
+    subprocess.call(["docker", *run_args])
 
 
 def run_debug_build(base_dir: str):
@@ -56,7 +56,7 @@ def run_debug_build(base_dir: str):
         base_dir,
     ]
 
-    pty.spawn(["docker", *build_args])
+    subprocess.call(["docker", *build_args])
 
 
 def fix_permission():
@@ -64,7 +64,7 @@ def fix_permission():
         return
     target_uid = os.environ.get("TARGET_UID")
     target_gid = os.environ.get("TARGET_GID")
-    pty.spawn(["chown", "-R", f"{target_uid}:{target_gid}", TARGETPATH])
+    subprocess.call(["chown", "-R", f"{target_uid}:{target_gid}", TARGETPATH])
 
 
 def write_update_marker():
@@ -88,5 +88,5 @@ def update():
         return
 
     print("Updating LPP test environment...")
-    pty.spawn(["docker", "pull", DOCKER_IMAGE])
+    subprocess.call(["docker", "pull", DOCKER_IMAGE])
     print("Update complete.")

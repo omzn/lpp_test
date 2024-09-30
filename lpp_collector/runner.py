@@ -1,5 +1,6 @@
 # PYTHON_ARGCOMPLETE_OK
 
+import subprocess
 import sys
 from typing import List
 from lpp_collector.config import (
@@ -11,7 +12,7 @@ import glob
 from pathlib import Path
 from .docker import fix_permission, run_test_container, run_debug_build, update
 import os
-import pty
+
 
 all_testcases = [
     Path(testcase)
@@ -85,7 +86,7 @@ def run_pytest(args):
     pwd = os.getcwd()
     os.environ["LPP_TARGET_PATH"] = pwd
     os.chdir(TEST_BASE_DIR)
-    pty.spawn(
+    subprocess.call(
         [
             "pytest",
             *args.pytest_args,
