@@ -8,28 +8,23 @@ from ...types import Response, UNSET
 from ... import errors
 
 
-
-
 def _get_kwargs(
     device_id: str,
-
 ) -> Dict[str, Any]:
-    
-
-    
-
-    
 
     _kwargs: Dict[str, Any] = {
         "method": "delete",
-        "url": "/api/device/{device_id}".format(device_id=device_id,),
+        "url": "/api/device/{device_id}".format(
+            device_id=device_id,
+        ),
     }
-
 
     return _kwargs
 
 
-def _parse_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Optional[Any]:
+def _parse_response(
+    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+) -> Optional[Any]:
     if response.status_code == HTTPStatus.NO_CONTENT:
         return None
     if client.raise_on_unexpected_status:
@@ -38,7 +33,9 @@ def _parse_response(*, client: Union[AuthenticatedClient, Client], response: htt
         return None
 
 
-def _build_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Response[Any]:
+def _build_response(
+    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+) -> Response:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -51,9 +48,8 @@ def sync_detailed(
     device_id: str,
     *,
     client: Union[AuthenticatedClient, Client],
-
-) -> Response[Any]:
-    """ 
+) -> Response:
+    """
     Args:
         device_id (str):
 
@@ -62,13 +58,11 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Any]
-     """
-
+        Response
+    """
 
     kwargs = _get_kwargs(
         device_id=device_id,
-
     )
 
     response = client.get_httpx_client().request(
@@ -82,9 +76,8 @@ async def asyncio_detailed(
     device_id: str,
     *,
     client: Union[AuthenticatedClient, Client],
-
-) -> Response[Any]:
-    """ 
+) -> Response:
+    """
     Args:
         device_id (str):
 
@@ -93,18 +86,13 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Any]
-     """
-
+        Response
+    """
 
     kwargs = _get_kwargs(
         device_id=device_id,
-
     )
 
-    response = await client.get_async_httpx_client().request(
-        **kwargs
-    )
+    response = await client.get_async_httpx_client().request(**kwargs)
 
     return _build_response(client=client, response=response)
-

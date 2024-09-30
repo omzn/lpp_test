@@ -4,9 +4,9 @@ from http import HTTPStatus
 from typing import Any, BinaryIO, MutableMapping, Optional, Tuple, TypeVar
 
 try:
-    from typing import Literal, Generic
+    from typing import Literal
 except ImportError:
-    from typing_extensions import Literal, Generic
+    from typing_extensions import Literal
 
 from attrs import define
 
@@ -38,13 +38,13 @@ T = TypeVar("T")
 
 
 @define
-class Response(Generic[T]):
+class Response:
     """A response from an endpoint"""
 
     status_code: HTTPStatus
     content: bytes
     headers: MutableMapping[str, str]
-    parsed: Optional[T]
+    parsed: Any
 
 
 __all__ = ["File", "Response", "FileJsonType", "Unset", "UNSET"]

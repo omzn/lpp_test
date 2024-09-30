@@ -12,27 +12,21 @@ from typing import Dict
 from ...models.test_result_request import TestResultRequest
 
 
-
 def _get_kwargs(
     device_id: str,
     *,
     body: TestResultRequest,
-
 ) -> Dict[str, Any]:
     headers: Dict[str, Any] = {}
 
-
-    
-
-    
-
     _kwargs: Dict[str, Any] = {
         "method": "post",
-        "url": "/api/testresult/{device_id}".format(device_id=device_id,),
+        "url": "/api/testresult/{device_id}".format(
+            device_id=device_id,
+        ),
     }
 
     _body = body.to_multipart()
-
 
     _kwargs["files"] = _body
 
@@ -40,7 +34,9 @@ def _get_kwargs(
     return _kwargs
 
 
-def _parse_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Optional[Any]:
+def _parse_response(
+    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+) -> Optional[Any]:
     if response.status_code == HTTPStatus.CREATED:
         return None
     if client.raise_on_unexpected_status:
@@ -49,7 +45,9 @@ def _parse_response(*, client: Union[AuthenticatedClient, Client], response: htt
         return None
 
 
-def _build_response(*, client: Union[AuthenticatedClient, Client], response: httpx.Response) -> Response[Any]:
+def _build_response(
+    *, client: Union[AuthenticatedClient, Client], response: httpx.Response
+) -> Response:
     return Response(
         status_code=HTTPStatus(response.status_code),
         content=response.content,
@@ -63,9 +61,8 @@ def sync_detailed(
     *,
     client: Union[AuthenticatedClient, Client],
     body: TestResultRequest,
-
-) -> Response[Any]:
-    """ 
+) -> Response:
+    """
     Args:
         device_id (str):
         body (TestResultRequest):
@@ -75,14 +72,12 @@ def sync_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Any]
-     """
-
+        Response
+    """
 
     kwargs = _get_kwargs(
         device_id=device_id,
-body=body,
-
+        body=body,
     )
 
     response = client.get_httpx_client().request(
@@ -97,9 +92,8 @@ async def asyncio_detailed(
     *,
     client: Union[AuthenticatedClient, Client],
     body: TestResultRequest,
-
-) -> Response[Any]:
-    """ 
+) -> Response:
+    """
     Args:
         device_id (str):
         body (TestResultRequest):
@@ -109,19 +103,14 @@ async def asyncio_detailed(
         httpx.TimeoutException: If the request takes longer than Client.timeout.
 
     Returns:
-        Response[Any]
-     """
-
+        Response
+    """
 
     kwargs = _get_kwargs(
         device_id=device_id,
-body=body,
-
+        body=body,
     )
 
-    response = await client.get_async_httpx_client().request(
-        **kwargs
-    )
+    response = await client.get_async_httpx_client().request(**kwargs)
 
     return _build_response(client=client, response=response)
-
