@@ -1,12 +1,12 @@
 """ Contains some shared types for properties """
 
 from http import HTTPStatus
-from typing import Any, BinaryIO, Generic, MutableMapping, Optional, Tuple, TypeVar
+from typing import Any, BinaryIO, MutableMapping, Optional, Tuple, TypeVar
 
 try:
-    from typing import Literal
+    from typing import Literal, Generic
 except ImportError:
-    from typing_extensions import Literal
+    from typing_extensions import Literal, Generic
 
 from attrs import define
 
@@ -23,7 +23,7 @@ FileJsonType = Tuple[Optional[str], BinaryIO, Optional[str]]
 
 @define
 class File:
-    """Contains information for file uploads"""
+    """ContainsAny information for file uploads"""
 
     payload: BinaryIO
     file_name: Optional[str] = None
@@ -38,13 +38,13 @@ T = TypeVar("T")
 
 
 @define
-class Response:
+class Response(Generic[T]):
     """A response from an endpoint"""
 
     status_code: HTTPStatus
     content: bytes
     headers: MutableMapping[str, str]
-    parsed: Any
+    parsed: Optional[T]
 
 
 __all__ = ["File", "Response", "FileJsonType", "Unset", "UNSET"]
