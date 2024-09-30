@@ -34,7 +34,7 @@ class Uploader:
     def has_any_test_result(self):
         return len(self.test_results) > 0
 
-    def _compress_tar(self, files: list[str]) -> BytesIO:
+    def _compress_tar(self, files) -> BytesIO:
         tar = BytesIO()
         with tarfile.open(fileobj=tar, mode="w") as tf:
             for file in files:
