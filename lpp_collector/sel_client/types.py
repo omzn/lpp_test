@@ -38,13 +38,13 @@ T = TypeVar("T")
 
 
 @define
-class Response(Generic[T]):
+class Response:
     """A response from an endpoint"""
 
     status_code: HTTPStatus
     content: bytes
     headers: MutableMapping[str, str]
-    parsed: Optional[T]
+    parsed: Any
 
 
 __all__ = ["File", "Response", "FileJsonType", "Unset", "UNSET"]
