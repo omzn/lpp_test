@@ -20,6 +20,16 @@ def run_test_container(args: List[str]):
     # print(f"Data directory: {data_dir}")
     # print(f"Target path: {target_path}")
 
+    fix_perm_args = []
+
+    if not sys.platform.startswith('win'):
+        fix_perm_args = [
+            "--env",
+            f"TARGET_UID={os.getuid()}",
+            "--env",
+            f"TARGET_GID={os.getgid()}",
+        ]
+
     run_args = [
         "run",
         "-it",
@@ -33,10 +43,7 @@ def run_test_container(args: List[str]):
         f"{data_dir}/bash_history:/root/.bash_history",
         "-w",
         "/workspaces",
-        "--env",
-        f"TARGET_UID={os.getuid()}",
-        "--env",
-        f"TARGET_GID={os.getgid()}",
+        *fix_perm_args,
         DOCKER_IMAGE,
         *args,
     ]
