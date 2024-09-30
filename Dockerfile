@@ -28,7 +28,7 @@ FROM python:3.10-slim AS collector
 WORKDIR /app
 ARG LPP_PYTHON_BASE=.
 
-RUN pip install poetry \
+RUN pip install poetry==1.7 \
     && poetry config virtualenvs.create false
 
 COPY ${LPP_PYTHON_BASE}/pyproject.toml ${LPP_PYTHON_BASE}/poetry.lock* ./

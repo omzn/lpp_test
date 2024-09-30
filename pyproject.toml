@@ -6,14 +6,14 @@ authors = ["f0reachARR <f0reach@f0reach.me>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.6"
 pytest = "^6.2.5"
 whiptail-dialogs = "^0.4.0"
 httpx = ">=0.20.0,<0.28.0"
 attrs = ">=21.3.0"
 python-dateutil = "^2.8.0"
-pytest-timeout = "^2.2.0"
-argcomplete = "^3.5.0"
+pytest-timeout = "^2"
+argcomplete = "^3"
 
 [tool.poetry.plugins.pytest11]
 lpp_collector = "lpp_collector"
