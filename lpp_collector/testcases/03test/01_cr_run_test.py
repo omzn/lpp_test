@@ -74,7 +74,7 @@ def common_task(mpl_file, out_file):
 # pytest code
 # ===================================
 
-TEST_RESULT_DIR = "test_results"
+TEST_RESULT_DIR = f"{TARGETPATH}/test_results"
 TEST_EXPECT_DIR = Path(__file__).parent / Path("test_expects")
 
 test_data = sorted(glob.glob(f"{TEST_BASE_DIR}/input0[123]/*.mpl", recursive=True))

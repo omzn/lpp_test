@@ -76,7 +76,7 @@ def common_task(mpl_file, out_file):
 # pytest code
 # ===================================
 
-TEST_RESULT_DIR = "test_results"
+TEST_RESULT_DIR = f"{TARGETPATH}/test_results"
 TEST_EXPECT_DIR = "test_expects"
 CASL2_FILE_DIR = "casl2"
 
