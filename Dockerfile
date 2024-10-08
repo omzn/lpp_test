@@ -36,7 +36,7 @@ RUN poetry install
 
 COPY ${LPP_PYTHON_BASE}/ ./
 
-RUN poetry build -f wheel
+RUN rm -f ./dist/*.whl && poetry build -f wheel
 
 ################################################################################
 # 演習室は Ubuntu 22.04 なので
@@ -61,7 +61,7 @@ RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg -
 # install essential packages
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    ca-certificates curl gnupg gdb \
+    ca-certificates curl gnupg gdb make \
     python3-pip tmux \
     vim less cmake g++ bash-completion whiptail \
     && apt-get clean \
