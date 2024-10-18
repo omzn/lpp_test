@@ -28,6 +28,11 @@ base_parser.add_argument(
     help="Enforce running pytest even though not in Docker environment",
 )
 base_parser.add_argument(
+    "--update",
+    action="store_true",
+    help="Update Docker image and exit",
+)
+base_parser.add_argument(
     "testsuite", choices=all_testsuite_list, help="Specify testsuite"
 )
 
@@ -99,6 +104,10 @@ def run_pytest(args):
 def main():
     args = full_parser.parse_args()
     # print(args)
+    if args.update:
+        update(True)
+        return
+
     if args.run_pytest or IS_DOCKER_ENV:
         run_pytest(args)
     else:

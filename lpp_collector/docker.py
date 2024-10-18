@@ -97,13 +97,21 @@ def update(force: bool = False):
         return
 
     print("Updating LPP test environment...")
-    previous_image_id = subprocess.check_output(
-        ["docker", "inspect", "--format", "{{.Id}}", DOCKER_IMAGE]
-    ).decode("utf-8")
+    previous_image_id = (
+        subprocess.check_output(
+            ["docker", "inspect", "--format", "{{.Id}}", DOCKER_IMAGE]
+        )
+        .decode("utf-8")
+        .strip("\n ")
+    )
     subprocess.call(["docker", "pull", DOCKER_IMAGE])
-    current_image_id = subprocess.check_output(
-        ["docker", "inspect", "--format", "{{.Id}}", DOCKER_IMAGE]
-    ).decode("utf-8")
+    current_image_id = (
+        subprocess.check_output(
+            ["docker", "inspect", "--format", "{{.Id}}", DOCKER_IMAGE]
+        )
+        .decode("utf-8")
+        .strip("\n ")
+    )
 
     if previous_image_id != current_image_id and previous_image_id != "":
         print("Removing old image...")
