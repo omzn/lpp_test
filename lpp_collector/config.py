@@ -6,7 +6,7 @@ import lpp_collector
 LPP_BASE_URL = (
     os.environ["LPP_BASE_URL"]
     if "LPP_BASE_URL" in os.environ
-    else "https://se.is.kit.ac.jp/lpp_api/"
+    else "https://133.16.160.205/lpp_api/"
 )
 
 LPP_CONSENT_TEXT = """

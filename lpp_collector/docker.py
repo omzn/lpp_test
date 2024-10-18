@@ -23,7 +23,7 @@ def run_test_container(args: List[str]):
 
     fix_perm_args = []
 
-    if not sys.platform.startswith('win'):
+    if not sys.platform.startswith("win"):
         fix_perm_args = [
             "--env",
             f"TARGET_UID={os.getuid()}",
@@ -73,6 +73,7 @@ def fix_permission():
     target_uid = os.environ.get("TARGET_UID")
     target_gid = os.environ.get("TARGET_GID")
     subprocess.call(["chown", "-R", f"{target_uid}:{target_gid}", TARGETPATH])
+    subprocess.call(["chown", "-R", f"{target_uid}:{target_gid}", LPP_DATA_DIR])
 
 
 def write_update_marker():
@@ -91,10 +92,21 @@ def check_update():
     return (time.time() - last_update) > LPP_UPDATE_INTERVAL
 
 
-def update():
-    if not check_update():
+def update(force: bool = False):
+    if not check_update() and not force:
         return
 
     print("Updating LPP test environment...")
+    previous_image_id = subprocess.check_output(
+        ["docker", "inspect", "--format", "{{.Id}}", DOCKER_IMAGE]
+    ).decode("utf-8")
     subprocess.call(["docker", "pull", DOCKER_IMAGE])
+    current_image_id = subprocess.check_output(
+        ["docker", "inspect", "--format", "{{.Id}}", DOCKER_IMAGE]
+    ).decode("utf-8")
+
+    if previous_image_id != current_image_id and previous_image_id != "":
+        print("Removing old image...")
+        subprocess.call(["docker", "rmi", previous_image_id])
+
     print("Update complete.")

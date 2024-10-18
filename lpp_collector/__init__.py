@@ -31,9 +31,9 @@ class LppCollector:
         if not self.uploader.has_any_test_result():
             return
 
-        print("Uploading test results...")
+        print("\nUploading test results...")
 
-        test_type = os.getcwd()
+        test_type = ""
 
         self.uploader.device_id = self.consent.get_consent()["device_id"]
         self.uploader.upload(source_dir=TARGETPATH, test_dir=".", test_type=test_type)
