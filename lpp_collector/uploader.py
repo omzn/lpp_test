@@ -68,7 +68,7 @@ class Uploader:
 
                 file.unlink()
 
-            except Exception as e:
+            except:
                 # 1件でもアップロードに失敗した場合は、次回アップロード時に再度アップロードを試みる
                 return False
         return True
@@ -107,7 +107,7 @@ class Uploader:
 
             if response.status_code != 201:
                 raise Exception(f"Failed to upload test results: {response.content}")
-        except Exception as e:
+        except:
             print(f"Failed to upload test results: {e}")
             self._store_test_result(result)
             return
