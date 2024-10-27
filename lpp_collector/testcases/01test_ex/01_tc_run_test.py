@@ -61,14 +61,16 @@ def common_task(mpl_file, out_file):
                 fp.write(l + "\n")
         return 0
     except ScanError as exc:
-        if re.search(r"sample0", mpl_file):
+        expect_file = Path(TEST_EXPECT_DIR).joinpath(Path(mpl_file).stem + ".stdout")
+        is_error_expected = not expect_file.exists() or expect_file.stat().st_size < 3
+        if re.search(r"sample0", mpl_file) and is_error_expected:
             for line in serr.splitlines():
                 out.append(line)
             with open(out_file, mode="w", encoding="utf-8") as fp:
                 for l in out:
                     fp.write(l + "\n")
             return 1
-        raise ScanError(serr) from exc
+        raise ScanError("Error occurred while specified testcase is correct") from exc
     except Exception as err:
         with open(out_file, mode="w", encoding="utf-8") as fp:
             print(err, file=fp)
