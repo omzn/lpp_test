@@ -68,7 +68,7 @@ def common_task(mpl_file, out_file):
             Path(mpl_file).stem + ".stderr"
         )
         is_error_expected = (
-            expect_err_file.exists() or expect_err_file.stat().st_size > 3
+            expect_err_file.exists() and expect_err_file.stat().st_size > 3
         )
         if re.search(r"sample0", mpl_file) and is_error_expected:
             for line in serr.splitlines():
