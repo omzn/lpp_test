@@ -87,7 +87,7 @@ def execution_task(casl2_file, out_file):
         c2c2 = Path("/casljs") / Path("c2c2.js")
         assembler_text = interactive_command(f"node {c2c2} -n -c -a {casl2_file}")
         if "DEFINED SYMBOLS" not in assembler_text:
-            raise Casl2AssembleError("Failed to compile")
+            raise Casl2AssembleError("Compile error")
         with open("input.json",encoding='utf-8') as fp:
             inp = json.load(fp)
         inputparams = ''
@@ -130,7 +130,7 @@ def test_mpplc_run(mpl_file):
     res = compile_task(mpl_file, out_file)
     if res == 0:
         casl2file = Path(__file__).parent/Path(CASL2_FILE_DIR)/Path(Path(mpl_file).stem + ".csl")
-        assert os.path.getsize(casl2file) > 0, "No CASL code generated."
+        assert os.path.getsize(casl2file) > 0, "CASL2ファイルが空です"
         out_file = Path(TEST_RESULT_DIR)/Path(Path(casl2file).name + ".out")
         execution_task(casl2file, out_file)
         expect_file = Path(TEST_EXPECT_DIR)/Path(Path(casl2file).name + ".out")
@@ -138,13 +138,13 @@ def test_mpplc_run(mpl_file):
             out_cont = ofp.read().splitlines()
             est_cont = efp.read().splitlines()
             for out_line, est_line in itertools.zip_longest(out_cont, est_cont, fillvalue=""):
-                assert out_line == est_line, "Line does not match."
+                assert out_line == est_line, "正常な出力と異なります"
     else:
         expect_file = Path(TEST_EXPECT_DIR)/Path(Path(mpl_file).name + ".stderr")
         with open(out_file,encoding='utf-8') as ofp, open(expect_file,encoding='utf-8') as efp:
             try:
                 o =  int(re.search(r'(\d+)',ofp.read()).group())
                 e =  int(re.search(r'(\d+)',efp.read()).group())
-                assert o - 1 <= e <= o + 1, "Line number of error message is different."
+                assert o - 1 <= e <= o + 1, "エラーが出ている行番号が異なります"
             except IndexError:
-                assert False, "Line number does not appear in error message."
+                assert False, "エラーメッセージ中に行番号がありません"

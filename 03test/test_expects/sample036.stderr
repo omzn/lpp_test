@@ -1,0 +1,2 @@
+Line:    2 ERROR: procedure name is undefined. (current token: 'NAME')
+Line:    2 ERROR: Parser aborted with error. (current token: 'NAME')
